@@ -27,8 +27,8 @@ func (app *application) authentication(w http.ResponseWriter, r *http.Request) {
 	
 		if newUser.validateRegistration() == true{
 			fmt.Println("All good")
-			
-			createUs(newUser, w, r)
+
+			createUser(newUser, w, r)
 			//или, нужно ли возвращать Id?
 			err  := models.Insert(newUser.Username, newUser.Password, newUser.Email)
 			if err != nil {
