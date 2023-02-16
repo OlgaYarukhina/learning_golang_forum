@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	models "forum/pkg"
 	"net/http"
 	"strconv"
 )
@@ -14,6 +15,25 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, r, "home.page.tmpl", &templateData{})
 }
+
+func (app *application) authentication(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, "authent.page.tmpl", &templateData{})
+	if r.Method == "POST" {
+		newUser := &models.User{
+			Email:    r.FormValue("email"),
+			Username: r.FormValue("username"),
+			Password: r.FormValue("password"),
+		}
+	
+		if newUser.validateRegistration() == true{
+			fmt.Println("All good")
+		} else {
+			fmt.Println("Something bad")
+		}
+	}
+}
+
+
 
 func (app *application) create(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {

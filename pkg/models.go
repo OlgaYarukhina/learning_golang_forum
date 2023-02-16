@@ -9,8 +9,9 @@ var ErrNoRecord = errors.New("models: подходящей записи не н�
 
 type User struct {
 	ID         int
-	username   string
-	password   string
-	email      string
-	created_at time.Time
+	Username   string
+	Password   string
+	Email      string
+	Errors 	   map[string]string
+	Created_at time.Time
 }

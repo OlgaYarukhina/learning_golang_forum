@@ -7,6 +7,7 @@ func (app *application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/authentication", app.authentication)
 	mux.HandleFunc("/create", app.create)
 	mux.HandleFunc("/show", app.show)
 
