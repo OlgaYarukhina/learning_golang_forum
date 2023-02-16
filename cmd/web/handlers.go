@@ -27,7 +27,13 @@ func (app *application) authentication(w http.ResponseWriter, r *http.Request) {
 	
 		if newUser.validateRegistration() == true{
 			fmt.Println("All good")
-			createUser(newUser, w, r)
+			
+			createUs(newUser, w, r)
+			//или, нужно ли возвращать Id?
+			err  := models.Insert(newUser.Username, newUser.Password, newUser.Email)
+			if err != nil {
+
+			}
 		} else {
 			fmt.Println("Something bad")
 			// отображение страницы с информацией
@@ -36,5 +42,5 @@ func (app *application) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
+//(m *UserModel) Insert(username, password, email string) (int, error) 
 
