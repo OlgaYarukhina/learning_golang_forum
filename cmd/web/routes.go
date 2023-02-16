@@ -1,9 +1,8 @@
 package main
 
 import (
-		"net/http"
-		"forum/cmd/web/additional"
-	)
+	"net/http"
+)
 
 func (app *Application) routes() *http.ServeMux {
 
@@ -11,8 +10,7 @@ func (app *Application) routes() *http.ServeMux {
 
 	mux.HandleFunc("/", app.home)
 	mux.HandleFunc("/authentication", app.authentication)
-	mux.HandleFunc("/create", app.additional.CreateUser)
-	mux.HandleFunc("/show", app.additional.Show)
+	//mux.HandleFunc("/show", app.additional.Show)
 
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./static")})
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))

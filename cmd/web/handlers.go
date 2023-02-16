@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"forum/cmd/web/additional"
 	models "forum/pkg"
 	"net/http"
-	"forum/cmd/web/additional"
 )
 
 func (app *Application) home(w http.ResponseWriter, r *http.Request) {
@@ -17,32 +17,27 @@ func (app *Application) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, "authent.page.tmpl", &templateData{})
 	if r.Method == "POST" {
 		newUser := &models.User{
 			Email:    r.FormValue("email"),
 			Username: r.FormValue("username"),
 			Password: r.FormValue("password"),
 		}
-	
-		if additional.ValidateRegistration(newUser) == true{
+
+		if additional.ValidateRegistration(newUser) == true {
 			fmt.Println("All good")
 
-			additional.CreateUser(newUser, w, r)
-
-			//или сразу в БД, но не знаю как педерать павильно модель
-			//нужно ли возвращать Id?
-			err  := models.Insert(newUser.Username, newUser.Password, newUser.Email)
+			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
+			err := app.Users.Insert(newUser.Username, newUser.Email, newUser.Password)
 			if err != nil {
-
+				app.ErrorLog.Println()
 			}
 		} else {
 			fmt.Println("Something bad")
 			// отображение страницы с информацией
-			
+
 		}
 	}
+	//на будущее, никогда не ставь app render в самом начале функции
+	app.render(w, r, "authent.page.tmpl", &templateData{})
 }
-
-//(m *UserModel) Insert(username, password, email string) (int, error) 
-
