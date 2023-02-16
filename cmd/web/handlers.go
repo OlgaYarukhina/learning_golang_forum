@@ -25,10 +25,10 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			Password: r.FormValue("password"),
 		}
 	
-		if newUser.additional.ValidateRegistration() == true{
+		if additional.ValidateRegistration(newUser) == true{
 			fmt.Println("All good")
 
-			app.additional.CreateUser(newUser, w, r)
+			additional.CreateUser(newUser, w, r)
 
 			//или сразу в БД, но не знаю как педерать павильно модель
 			//нужно ли возвращать Id?

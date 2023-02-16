@@ -19,6 +19,7 @@ type Application struct {
 	Users         *models.UserModel
 }
 
+var app Application
 
 func main() {
 
@@ -36,7 +37,7 @@ func main() {
 
 	templateCache, err := newTemplateCache("./ui/html/")
 
-	app := &Application{
+	app = Application{
 		ErrorLog:      errorLog,
 		InfoLog:       infoLog,
 		TemplateCache: templateCache,
