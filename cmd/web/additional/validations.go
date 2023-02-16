@@ -38,7 +38,7 @@ func  (registr *models.User)validateRegistration() bool {
 }
 
 
-func (registr *models.UserModel) ValidateLogin() bool {
+func (registr *models.User) validateLogin() bool {
 	registr.Errors = make(map[string]string)
 
 
