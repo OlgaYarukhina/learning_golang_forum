@@ -12,7 +12,7 @@ var rxUserName = regexp.MustCompile(`.{4,10}`)
 var rxPassword = regexp.MustCompile(`.{6,12}`)
 
 
-func  (registr *models.User)ValidateRegistration() bool {
+func  (registr *models.User) ValidateRegistration() bool {
 	registr.Errors = make(map[string]string)
 	fmt.Println(registr.Email)
 		fmt.Println(registr.Username)

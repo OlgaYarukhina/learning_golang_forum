@@ -4,7 +4,7 @@ import (
 	"fmt"
 	models "forum/pkg"
 	"net/http"
-	"forum/cmd/additional"
+	"forum/cmd/web/additional"
 )
 
 func (app *Application) home(w http.ResponseWriter, r *http.Request) {
@@ -28,8 +28,9 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		if newUser.additional.ValidateRegistration() == true{
 			fmt.Println("All good")
 
-			additional.createUser(newUser, w, r)
-			//или сразу в БД но не знаю как педерать павильно модель
+			app.additional.CreateUser(newUser, w, r)
+
+			//или сразу в БД, но не знаю как педерать павильно модель
 			//нужно ли возвращать Id?
 			err  := models.Insert(newUser.Username, newUser.Password, newUser.Email)
 			if err != nil {
