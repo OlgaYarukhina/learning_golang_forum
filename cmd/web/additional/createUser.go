@@ -2,12 +2,13 @@ package additional
 
 import (
 	"fmt"
+	models "forum/pkg"
 	"net/http"
 	"strconv"
 )
 
-func (app *application) createUser(user *models.User, w http.ResponseWriter, r *http.Request) {
-	name := user.Name
+func (app *Application) CreateUser(user *models.User, w http.ResponseWriter, r *http.Request) {
+	name := user.Username
 	email := user.Email
 	password := user.Password
 
@@ -20,7 +21,7 @@ func (app *application) createUser(user *models.User, w http.ResponseWriter, r *
 	w.Write([]byte(string(id)))
 }
 
-func (app *application) show(w http.ResponseWriter, r *http.Request) {
+func (app *Application) Show(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		app.notFound(w)

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	models "forum/pkg"
 	"net/http"
-	"forum/cmd/web/additional"
+	"forum/cmd/additional"
 )
 
-func (app *application) home(w http.ResponseWriter, r *http.Request) {
+func (app *Application) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		app.notFound(w)
 		return
@@ -16,7 +16,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "home.page.tmpl", &templateData{})
 }
 
-func (app *application) authentication(w http.ResponseWriter, r *http.Request) {
+func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "authent.page.tmpl", &templateData{})
 	if r.Method == "POST" {
 		newUser := &models.User{
@@ -25,7 +25,7 @@ func (app *application) authentication(w http.ResponseWriter, r *http.Request) {
 			Password: r.FormValue("password"),
 		}
 	
-		if newUser.additional.validateRegistration() == true{
+		if newUser.additional.ValidateRegistration() == true{
 			fmt.Println("All good")
 
 			additional.createUser(newUser, w, r)

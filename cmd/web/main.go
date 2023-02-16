@@ -12,12 +12,13 @@ import (
 	"path/filepath"
 )
 
-type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	templateCache map[string]*template.Template
-	users         *models.UserModel
+type Application struct {
+	ErrorLog      *log.Logger
+	InfoLog       *log.Logger
+	TemplateCache map[string]*template.Template
+	Users         *models.UserModel
 }
+
 
 func main() {
 
@@ -35,16 +36,16 @@ func main() {
 
 	templateCache, err := newTemplateCache("./ui/html/")
 
-	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
-		templateCache: templateCache,
-		users:         &models.UserModel{DB: db},
+	app := &Application{
+		ErrorLog:      errorLog,
+		InfoLog:       infoLog,
+		TemplateCache: templateCache,
+		Users:         &models.UserModel{DB: db},
 	}
 
 	flag.Parse()
 
-	infoLog.Printf("Запуск веб-сервера на http://127.0.0.1:%s", *addr)
+	infoLog.Printf("Starting forum on port: 4000", *addr)
 
 	srv := &http.Server{
 		Addr:     *addr,
