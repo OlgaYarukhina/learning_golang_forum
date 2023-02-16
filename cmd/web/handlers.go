@@ -29,7 +29,8 @@ func (app *application) authentication(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("All good")
 
 			createUser(newUser, w, r)
-			//или, нужно ли возвращать Id?
+			//или сразу в БД но не знаю как педерать павильно модель
+			//нужно ли возвращать Id?
 			err  := models.Insert(newUser.Username, newUser.Password, newUser.Email)
 			if err != nil {
 
