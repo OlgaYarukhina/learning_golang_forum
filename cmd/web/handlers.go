@@ -31,6 +31,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 		if len(checkValid) == 0 {
 			fmt.Println("All good")
+			app.render(w, r, "home.page.tmpl", &templateData{})
 			
 			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
 			err := app.Users.Insert(newUser.Username, newUser.Email, newUser.Password)
@@ -63,6 +64,10 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//на будущее, никогда не ставь app render в самом начале функции
+	if r.Method != "POST" {
+			//на будущее, никогда не ставь app render в самом начале функции
 	app.render(w, r, "authent.page.tmpl", &templateData{})
+		}
+
+
 }
