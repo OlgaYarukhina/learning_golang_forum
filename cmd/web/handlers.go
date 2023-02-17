@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"forum/cmd/web/additional"
 	models "forum/pkg"
 	"net/http"
@@ -30,7 +29,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		checkValid := additional.ValidateRegistration(newUser)
 
 		if len(checkValid) == 0 {
-			fmt.Println("All good")
+			// show page with cogratulations or home page with button "Logout"
 			app.render(w, r, "home.page.tmpl", &templateData{})
 			
 			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
@@ -44,7 +43,6 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 				app.render(w, r, "authent.page.tmpl", msg)
 
 			}
-			// show page with cogratulations or home page with button "Logout"
 			
 		} else {
 			for key, value := range checkValid {

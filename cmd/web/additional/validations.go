@@ -14,9 +14,6 @@ var rxPassword = regexp.MustCompile(`.{6,12}`)
 
 func ValidateRegistration(registr *models.User) map[string]string {
 	registr.Errors = make(map[string]string)
-	fmt.Println(registr.Email)
-	fmt.Println(registr.Username)
-	fmt.Println(registr.Password)
 
 	matchEmail := rxEmail.Match([]byte(registr.Email))
 	if matchEmail == false {
@@ -33,15 +30,6 @@ func ValidateRegistration(registr *models.User) map[string]string {
 		registr.Errors["Password"] = "User password must contain at least 6 signs"
 	}
 	fmt.Println(registr.Errors)
-
-	return registr.Errors
-}
-
-
-func  ValidateLogin(registr *models.User) map[string]string {
-	registr.Errors = make(map[string]string)
-
-
 
 	return registr.Errors
 }
