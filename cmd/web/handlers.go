@@ -19,8 +19,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 	// save all errors in one variable
 	var msg *templateData
-
-
+	
 	if r.Method == "POST" {
 		newUser := &models.User{
 			Email:    r.FormValue("email"),
@@ -28,7 +27,9 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			Password: r.FormValue("password"),
 		}
 
-		if additional.ValidateRegistration(newUser) == true {
+		checkValid := additional.ValidateRegistration(newUser)
+
+		if len(checkValid) == 0 {
 			fmt.Println("All good")
 			
 			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
@@ -45,14 +46,18 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			// show page with cogratulations or home page with button "Logout"
 			
 		} else {
-			fmt.Println("Something bad")
-			// show page with wrong data registrations
-			
-			// problems here
-			msg.Errors["Username"] = newUser.Username
-			msg.Errors["Email"] = newUser.Email
-			
-			fmt.Print("Here")
+			for key, value := range checkValid {
+				
+				if key == "Username" {
+					msg.Errors["Username"] = value
+				}
+				if key == "Email" {
+					msg.Errors["Email"] = value
+				}
+				if key == "Password" {
+					msg.Errors["Password"] = value
+				}
+			}
 			app.render(w, r, "authent.page.tmpl", msg)
 
 		}

@@ -12,11 +12,11 @@ var rxUserName = regexp.MustCompile(`.{4,10}`)
 var rxPassword = regexp.MustCompile(`.{6,12}`)
 
 
-func ValidateRegistration(registr *models.User) bool {
+func ValidateRegistration(registr *models.User) map[string]string {
 	registr.Errors = make(map[string]string)
 	fmt.Println(registr.Email)
-		fmt.Println(registr.Username)
-		fmt.Println(registr.Password)
+	fmt.Println(registr.Username)
+	fmt.Println(registr.Password)
 
 	matchEmail := rxEmail.Match([]byte(registr.Email))
 	if matchEmail == false {
@@ -25,23 +25,23 @@ func ValidateRegistration(registr *models.User) bool {
 
 	matchName := rxUserName.Match([]byte(registr.Username))
 	if matchName == false {
-		registr.Errors["UserName"] = "User name must contain at least 4 signs"
+		registr.Errors["Username"] = "User name must contain at least 4 signs"
 	}
 
 	matchPW := rxPassword.Match([]byte(registr.Password))
 	if matchPW == false {
-		registr.Errors["Password"] = "User password contain at least 6 signs"
+		registr.Errors["Password"] = "User password must contain at least 6 signs"
 	}
 	fmt.Println(registr.Errors)
 
-	return len(registr.Errors) == 0
+	return registr.Errors
 }
 
 
-func  ValidateLogin(registr *models.User) bool {
+func  ValidateLogin(registr *models.User) map[string]string {
 	registr.Errors = make(map[string]string)
 
 
 
-	return len(registr.Errors) == 0
+	return registr.Errors
 }
