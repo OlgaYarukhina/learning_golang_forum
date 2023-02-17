@@ -39,3 +39,4 @@ func (m *UserModel) Insert(username, password, email string) error {
 	// перед возвратом из метода.
 	return nil
 }
+

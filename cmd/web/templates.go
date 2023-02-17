@@ -6,6 +6,7 @@ import (
 )
 
 type templateData struct {
+	Errors	map[string]string
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {
