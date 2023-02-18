@@ -17,7 +17,7 @@ func (app *Application) home(w http.ResponseWriter, r *http.Request) {
 func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 	// save all errors in one variable
-	var msg *templateData
+	var msg templateData
 	
 	if r.Method == "POST" {
 		newUser := &models.User{
@@ -38,15 +38,15 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 				app.ErrorLog.Println()
 				// return wich fild is not unic
 				// add check errors
-				msg.Errors["Username"]  = "User already exists"
-			    msg.Errors["Email"]  = "Email already exists"
-				app.render(w, r, "authent.page.tmpl", msg)
+				msg.Errors["Username"]  = "User " + newUser.Username + " already exists"
+			    msg.Errors["Email"]  = "Email " + newUser.Email + " already exists"
+				app.render(w, r, "authent.page.tmpl", &msg)
 
 			}
 			
 		} else {
 			
-			app.render(w, r, "authent.page.tmpl", msg)
+			app.render(w, r, "authent.page.tmpl", &msg)
 
 		}
 	}
