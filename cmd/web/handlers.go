@@ -26,9 +26,9 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			Password: r.FormValue("password"),
 		}
 
-		checkValid := additional.ValidateRegistration(newUser)
+		msg.Errors = additional.ValidateRegistration(newUser)
 
-		if len(checkValid) == 0 {
+		if len(msg.Errors) == 0 {
 			// show page with cogratulations or home page with button "Logout"
 			app.render(w, r, "home.page.tmpl", &templateData{})
 			
@@ -45,18 +45,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			}
 			
 		} else {
-			for key, value := range checkValid {
-				
-				if key == "Username" {
-					msg.Errors["Username"] = value
-				}
-				if key == "Email" {
-					msg.Errors["Email"] = value
-				}
-				if key == "Password" {
-					msg.Errors["Password"] = value
-				}
-			}
+			
 			app.render(w, r, "authent.page.tmpl", msg)
 
 		}
