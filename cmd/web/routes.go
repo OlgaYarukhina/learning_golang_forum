@@ -10,6 +10,7 @@ func (app *Application) routes() *http.ServeMux {
 
 	mux.HandleFunc("/", app.home)
 	mux.HandleFunc("/authentication", app.authentication)
+	mux.HandleFunc("/artical", app.artical)
 	//mux.HandleFunc("/show", app.additional.Show)
 
 	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./static")})

@@ -41,20 +41,19 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 				msg.Errors["Username"]  = "User " + newUser.Username + " already exists"
 			    msg.Errors["Email"]  = "Email " + newUser.Email + " already exists"
 				app.render(w, r, "authent.page.tmpl", &msg)
-
 			}
-			
 		} else {
-			
 			app.render(w, r, "authent.page.tmpl", &msg)
-
 		}
 	}
-
 	if r.Method != "POST" {
 			//на будущее, никогда не ставь app render в самом начале функции
 	app.render(w, r, "authent.page.tmpl", &templateData{})
 		}
+}
 
 
+func (app *Application) artical(w http.ResponseWriter, r *http.Request) {
+	
+	app.render(w, r, "artical.page.tmpl", &templateData{})
 }
