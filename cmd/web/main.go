@@ -4,12 +4,13 @@ import (
 	"database/sql"
 	"flag"
 	models "forum/pkg"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type application struct {
@@ -17,14 +18,17 @@ type application struct {
 	infoLog       *log.Logger
 	templateCache map[string]*template.Template
 	users         *models.UserModel
+	posts         *models.PostModel
 }
 
 func main() {
 
-	addr := flag.String("addr", ":4000", "Network address HTTP")
+	addr := flag.String("addr", ":8080", "Network address HTTP")
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	templateCache, _ := newTemplateCache("./ui/html/")
 
 	db, err := openDB("./pkg/Forum.db")
 	if err != nil {
@@ -33,18 +37,17 @@ func main() {
 
 	defer db.Close()
 
-	templateCache, err := newTemplateCache("./ui/html/")
-
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
 		templateCache: templateCache,
 		users:         &models.UserModel{DB: db},
+		posts:         &models.PostModel{DB: db},
 	}
 
 	flag.Parse()
 
-	infoLog.Printf("Запуск веб-сервера на http://127.0.0.1:%s", *addr)
+	infoLog.Printf("Starting the web server @ http://localhost%s", *addr)
 
 	srv := &http.Server{
 		Addr:     *addr,
@@ -66,7 +69,7 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 		return nil, err
 	}
 
-	s, err := f.Stat()
+	s, _ := f.Stat()
 	if s.IsDir() {
 		index := filepath.Join(path, "index.html")
 		if _, err := nfs.fs.Open(index); err != nil {

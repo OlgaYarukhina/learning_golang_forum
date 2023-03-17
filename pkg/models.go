@@ -14,3 +14,12 @@ type User struct {
 	email      string
 	created_at time.Time
 }
+
+type Post struct {
+	id          int
+	header      string
+	description string
+	category_id int
+	user_id     int
+	created_at  string
+}
