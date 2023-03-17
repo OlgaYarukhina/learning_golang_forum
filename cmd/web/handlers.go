@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"forum/cmd/web/additional"
 	models "forum/pkg"
 	"net/http"
