@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	models "forum/pkg"
+	"github.com/mattn/go-sqlite3"
 	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
@@ -15,6 +16,7 @@ import (
 type Application struct {
 	ErrorLog      *log.Logger
 	InfoLog       *log.Logger
+	sqlError      sqlite3.Error
 	TemplateCache map[string]*template.Template
 	Users         *models.UserModel
 }

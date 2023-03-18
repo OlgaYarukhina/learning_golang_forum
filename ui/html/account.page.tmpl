@@ -1,0 +1,13 @@
+{{template "base" .}}
+
+{{define "title"}}Личный кабинет{{end}}
+
+{{define "main"}}
+{{ with .Data.username }}
+<h2>{{.}}</h2>
+{{end}}
+<p></p>
+
+
+<p>Пока здесь ничего нет!</p>
+{{end}}

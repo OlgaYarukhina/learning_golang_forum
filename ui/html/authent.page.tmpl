@@ -22,7 +22,7 @@
                     <span class="input-group-text">@</span>
                     <input type="text" class="form-control" id="email" name="email" required>
                   </div>
-                  {{ with .Errors.Email }}
+                  {{ with .Data.Email }}
                   <p class="error">{{ . }}</p>
                   {{ end }}
                 </div>
@@ -32,7 +32,7 @@
               <div class="col-md-4">
                 <label for="username" class="form-label">User name</label>
                 <input type="text" class="form-control" id="username" name="username" value="" required>
-                {{ with .Errors.Username }}
+                {{ with .Data.Username }}
                 <p class="error" >{{ . }}</p>
                 {{ end }}
               </div>
@@ -42,7 +42,7 @@
               <div class="col-md-4">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password"  value="" required>
-                {{ with .Errors.Password }}
+                {{ with .Data.Password }}
                 <p class="error" >{{ . }}</p>
                 {{ end }}
               </div>
@@ -60,7 +60,7 @@
 
             <h4>Log in</h4>
 
-            <form class="row g-3 needs-validation" method="POST">
+            <form class="row g-3 needs-validation" method="POST" action="/login">
 
                 <div class="col-md-4">
      
@@ -71,12 +71,6 @@
                     </div>
                   </div>
 
-               
-
-                <div class="col-md-4">
-                  <label for="username" class="form-label">User name</label>
-                  <input type="text" class="form-control" id="username" name="username" value="" required>
-                </div>
 
                 <div class="col-md-4">
                   <label for="password" class="form-label">Password</label>
