@@ -7,6 +7,7 @@ import (
 
 type templateData struct {
 	Data map[string]string
+	DataArray map[string][]string
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

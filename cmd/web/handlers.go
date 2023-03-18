@@ -30,7 +30,7 @@ func (app *Application) account(w http.ResponseWriter, r *http.Request) {
 
 	users := map[string]string{"username": userSession.Username}
 	objectUser.Data = users
-	app.render(w, r, "account.page.tmpl", &objectUser)
+	app.render(w, r, ".page.tmpl", &objectUser)
 }
 
 func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
@@ -81,6 +81,12 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
+	var data templateData
+	var allCategories =  app.Posts.GetCategories()
+	data.DataArray = make(map[string][]string)
+	data.DataArray ["Categories"] = allCategories
+
+	fmt.Println(data)
 
 	if r.Method == "POST" {
 
@@ -94,22 +100,22 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 		user, err := app.Users.GetUserByUsername(userSession.Username)
 
 		newPost := &models.Post{
+			User_id:  user.ID,
 			Title:    r.FormValue("title"),
 			Category: r.FormValue("category"),
-			User_id:  user.ID,
 			Content:  r.FormValue("content"),
 		}
 
-		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.User_id)
+		err = app.Posts.Insert(newPost.Title, newPost.Category, newPost.Content, newPost.User_id)
 		if err != nil {
 			app.ErrorLog.Println(err)
 		}
 		http.Redirect(w, r, "/", 303)
 		return
 	}
-
-	app.render(w, r, "workspace.page.tmpl", &templateData{})
+	app.render(w, r, "workspace.page.tmpl", &data)
 }
+
 
 func (app *Application) authorization(w http.ResponseWriter, r *http.Request) {
 

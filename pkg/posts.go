@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -9,7 +10,7 @@ type PostModel struct {
 	DB *sql.DB
 }
 
-func (m *PostModel) Insert(header, description string, userId int) error {
+func (m *PostModel) Insert(header, category, description string, userId int) error {
 	stmt := `INSERT INTO post (header, description,user_id, created_at)
     VALUES(?,?,?, current_date)`
 
@@ -26,6 +27,36 @@ func (m *PostModel) Insert(header, description string, userId int) error {
 
 	return nil
 }
+
+
+// Get all categories
+func (m *PostModel) GetCategories() []string {
+	var name string
+	var allCategories []string
+
+	rows, err := m.DB.Query(`SELECT * FROM category`)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(rows)
+
+	for rows.Next() {
+		err := rows.Scan(&name)
+		if err != nil {
+			log.Println("Something wrong with db")
+			return nil
+		}
+		fmt.Println("Here1")
+		allCategories = append(allCategories, name)
+	}
+	
+	fmt.Println("Here2")
+	fmt.Println(allCategories)
+
+	return allCategories
+}
+
+
 
 // Get one user posts
 func (m *PostModel) GetUserPosts(userID int) map[string][]string {
