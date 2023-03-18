@@ -82,15 +82,13 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 				case false:
 					msg.Data["Email"] = "Email " + newUser.Email + " already exists"
 				}
-
 				app.render(w, r, "authent.page.tmpl", &msg)
 			}
 		default:
 			app.render(w, r, "authent.page.tmpl", &msg)
 		}
-	} else {
-		app.render(w, r, "authent.page.tmpl", &msg)
 	}
+
 	if r.Method != "POST" {
 		app.render(w, r, "authent.page.tmpl", &templateData{})
 	}
@@ -105,17 +103,12 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 			Content:  r.FormValue("content"),
 		}
 
-		app.render(w, r, "workspace.page.tmpl", &templateData{})
 		err := app.Posts.Insert(newPost.Title, newPost.Content)
 		if err != nil {
 			app.ErrorLog.Println()
 		}
-
-	}
-
-	if r.Method != "POST" {
-		//на будущее, никогда не ставь app render в самом начале функции
-		app.render(w, r, "authent.page.tmpl", &templateData{})
+		http.Redirect(w, r, "/", 303)
+		return
 	}
 
 	app.render(w, r, "workspace.page.tmpl", &templateData{})
