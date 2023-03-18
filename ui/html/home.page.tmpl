@@ -1,13 +1,36 @@
 <!doctype html>
 
 {{template "base" .}}
- 
-{{define "title"}}Домашняя страницы{{end}}
- 
-{{define "main"}}
-<h2>Forum in processing</h2>
-<p>Log in to read the artical</p>
-            
 
-<p>Пока здесь ничего нет!</p>
+{{define "title"}}Home page{{end}}
+
+{{define "main"}}
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">Something here ... </div>
+    <div class="col-6">
+      All articals
+      <br>Artical 1
+      <br>Artical 2
+      <br>Artical 3
+    </div>
+    <div class="col-6">
+      <h4>Loging for create artical, read full artical or comment!</h4>
+      <p></p>
+
+      <a role="button" class="btn btn-dark" href="/my-workspace">Create artical</a>
+        <p></p>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+
+
+<p></p>
+
+
 {{end}}

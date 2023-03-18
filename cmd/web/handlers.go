@@ -68,6 +68,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			// show page with cogratulations or home page with button "Logout"
 			app.render(w, r, "home.page.tmpl", &templateData{})
 			hashedPassword, err := additional.HashPassword(newUser.Password)
+
 			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
 			err = app.Users.Insert(newUser.Username, hashedPassword, newUser.Email)
 			if errors.As(err, &app.sqlError) {
@@ -87,6 +88,28 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		default:
 			app.render(w, r, "authent.page.tmpl", &msg)
 		}
+	} else {
+		app.render(w, r, "authent.page.tmpl", &msg)
+	}
+	if r.Method != "POST" {
+		app.render(w, r, "authent.page.tmpl", &templateData{})
+	}
+}
+
+func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "POST" {
+		newPost := &models.Post{
+			Title:    r.FormValue("title"),
+			Category: r.FormValue("category"),
+			Content:  r.FormValue("content"),
+		}
+
+		app.render(w, r, "workspace.page.tmpl", &templateData{})
+		err := app.Posts.Insert(newPost.Title, newPost.Content)
+		if err != nil {
+			app.ErrorLog.Println()
+		}
 
 	}
 
@@ -95,6 +118,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		app.render(w, r, "authent.page.tmpl", &templateData{})
 	}
 
+	app.render(w, r, "workspace.page.tmpl", &templateData{})
 }
 
 func (app *Application) authorization(w http.ResponseWriter, r *http.Request) {

@@ -15,3 +15,11 @@ type User struct {
 	Errors 	   map[string]string
 	Created_at time.Time
 }
+
+type Post struct {
+	ID         int
+	Title      string
+	Category   string
+	Content    string
+	Created_at time.Time
+}

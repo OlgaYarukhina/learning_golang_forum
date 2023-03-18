@@ -19,6 +19,7 @@ type Application struct {
 	sqlError      sqlite3.Error
 	TemplateCache map[string]*template.Template
 	Users         *models.UserModel
+	Posts         *models.PostModel
 }
 
 var app Application
@@ -26,7 +27,6 @@ var app Application
 func main() {
 
 	addr := flag.String("addr", ":4000", "Network address HTTP")
-
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -44,6 +44,7 @@ func main() {
 		InfoLog:       infoLog,
 		TemplateCache: templateCache,
 		Users:         &models.UserModel{DB: db},
+		Posts:         &models.PostModel{DB: db},
 	}
 
 	flag.Parse()
