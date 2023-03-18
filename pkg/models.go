@@ -12,7 +12,7 @@ type User struct {
 	Username   string
 	Password   string
 	Email      string
-	Errors 	   map[string]string
+	Errors     map[string]string
 	Created_at time.Time
 }
 
@@ -20,6 +20,7 @@ type Post struct {
 	ID         int
 	Title      string
 	Category   string
+	User_id    int
 	Content    string
 	Created_at time.Time
 }

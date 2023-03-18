@@ -8,6 +8,19 @@ type UserModel struct {
 	DB *sql.DB
 }
 
+//получаем все данные о пользователе по его логину
+func (m *UserModel) GetUserByUsername(username string) (User, error) {
+	stmt := `SELECT * FROM user WHERE username = ?`
+	s := User{}
+	row := m.DB.QueryRow(stmt, username)
+	err := row.Scan(&s.ID, &s.Username, &s.Password, &s.Email, &s.Created_at)
+	if err != nil {
+		return s, nil
+	}
+
+	return s, err
+}
+
 // Insert - Метод для создания
 func (m *UserModel) Insert(username, password, email string) error {
 

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var sessions = map[string]models.Session{} // array contains session_token + username
+// array contains session_token + username
 
 func (app *Application) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
@@ -22,26 +22,10 @@ func (app *Application) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *Application) account(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("session_token")
-
-	if err != nil || err == http.ErrNoCookie {
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
-
+	c, _ := r.Cookie("session_token")
 	sessionToken := c.Value
-	userSession, exists := sessions[sessionToken]
+	userSession := app.Session[sessionToken]
 
-	if !exists {
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
-
-	if models.Session.IsExpired(userSession) {
-		delete(sessions, sessionToken)
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
 	var objectUser templateData
 
 	users := map[string]string{"username": userSession.Username}
@@ -67,6 +51,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		case 0:
 			// show page with cogratulations or home page with button "Logout"
 			app.render(w, r, "home.page.tmpl", &templateData{})
+			//хешируем пароль
 			hashedPassword, err := additional.HashPassword(newUser.Password)
 
 			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
@@ -84,6 +69,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 				}
 				app.render(w, r, "authent.page.tmpl", &msg)
 			}
+
 		default:
 			app.render(w, r, "authent.page.tmpl", &msg)
 		}
@@ -97,15 +83,26 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
+
+		//Получаем токен из куков
+		c, _ := r.Cookie("session_token")
+		sessionToken := c.Value
+		userSession := app.Session[sessionToken]
+		//userSeesion - хранит в себе userName конкретного пользователю кому принадлежит сам токен
+
+		//получаем всю информацию из базы данных юзера кому принадлежит этот username
+		user, err := app.Users.GetUserByUsername(userSession.Username)
+
 		newPost := &models.Post{
 			Title:    r.FormValue("title"),
 			Category: r.FormValue("category"),
+			User_id:  user.ID,
 			Content:  r.FormValue("content"),
 		}
 
-		err := app.Posts.Insert(newPost.Title, newPost.Content)
+		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.User_id)
 		if err != nil {
-			app.ErrorLog.Println()
+			app.ErrorLog.Println(err)
 		}
 		http.Redirect(w, r, "/", 303)
 		return
@@ -123,13 +120,17 @@ func (app *Application) authorization(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 		user, err := app.Users.CheckUser(email) // get user by email
 
-		switch additional.CheckPasswordHash(password, user.Password) {
+		switch additional.CheckPasswordHash(password, user.Password) { //проверяем равен ли пароль который ввел пользователь паролю в БД
 		case true:
+			//создаем токен
 			sessionToken := uuid.NewString()
+			//делаем длительность сессии 120 секунд
 			expiresAt := time.Now().Add(120 * time.Second)
 
-			sessions[sessionToken] = models.Session{Username: user.Username, Expiry: expiresAt}
+			//заполняем массив, куда входит токен и имя пользователя
+			app.Session[sessionToken] = models.Session{Username: user.Username, Expiry: expiresAt}
 
+			//устанавливаем куки пользователю и записываем туда имя его и токен
 			http.SetCookie(w, &http.Cookie{
 				Name:    "session_token",
 				Value:   sessionToken,
@@ -142,7 +143,8 @@ func (app *Application) authorization(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			app.ErrorLog.Println(err)
 		}
-		app.render(w, r, "authent.page.tmpl", &templateData{})
+		http.Redirect(w, r, "/", 303)
+		return
 	}
 	if r.Method != "POST" {
 		//на будущее, никогда не ставь app render в самом начале функции

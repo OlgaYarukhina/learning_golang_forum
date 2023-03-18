@@ -18,6 +18,7 @@ type Application struct {
 	InfoLog       *log.Logger
 	sqlError      sqlite3.Error
 	TemplateCache map[string]*template.Template
+	Session       map[string]models.Session
 	Users         *models.UserModel
 	Posts         *models.PostModel
 }
@@ -43,6 +44,7 @@ func main() {
 		ErrorLog:      errorLog,
 		InfoLog:       infoLog,
 		TemplateCache: templateCache,
+		Session:       map[string]models.Session{},
 		Users:         &models.UserModel{DB: db},
 		Posts:         &models.PostModel{DB: db},
 	}

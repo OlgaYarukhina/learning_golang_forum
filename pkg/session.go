@@ -7,6 +7,8 @@ type Session struct {
 	Expiry   time.Time
 }
 
+//проверка действителен ли токен по времени или нет
+
 func (s Session) IsExpired() bool {
 	return s.Expiry.Before(time.Now())
 }
