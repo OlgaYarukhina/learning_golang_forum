@@ -37,27 +37,39 @@
             <br/>
             <h4>New user</h4>
             <form class="row g-3 needs-validation" method="POST" action="/authentication">
-                <div class="col-md-4">
-
-                    <label for="email" class="form-label">Email</label>
-                    <div class="input-group has-validation">
-                      <span class="input-group-text">@</span>
-                      <input type="text" class="form-control" id="email" name="email" required>
-                    </div>
-                  </div>
-
-                <div class="col-md-4">
-                  <label for="username" class="form-label">User name</label>
-                  <input type="text" class="form-control" id="username" name="username" value="" required>
+              <div class="col-md-4">
+                <label for="newEmail" class="form-label">Email</label>
+                <div class="input-group has-validation">
+                  <span class="input-group-text">@</span>
+                  <input type="text" class="form-control" id="newEmail" name="newEmail" required>
                 </div>
-                <div class="col-md-4">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password" name="password"  value="" required>
-                </div>
+                {{ with .Data.NewEmail }}
+                <p class="error">{{ . }}</p>
+                {{ end }}
+              </div>
 
-                <div class="col-12">
-                  <button class="btn btn-primary" type="submit">Submit form</button>
-                </div>
+
+              <div class="col-md-4">
+                <label for="newUser" class="form-label">User name</label>
+                <input type="newUser" class="form-control" id="newUser" name="newUser"  value="" required>
+                {{ with .Data.NewUser }}
+                <p class="error" >{{ . }}</p>
+                {{ end }}
+              </div>
+
+
+
+              <div class="col-md-4">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password"  value="" required>
+                {{ with .Data.NewPassword }}
+                <p class="error" >{{ . }}</p>
+                {{ end }}
+              </div>
+              <div class="col-12">
+                <button class="btn btn-primary" type="submit">Submit form</button>
+              </div>
+
               </form>
         </div>
     </div>

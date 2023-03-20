@@ -40,8 +40,13 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		newUser := &models.User{
+			Email:    r.FormValue("newEmail"),
+			Username: r.FormValue("newUsername"),
+			Password: r.FormValue("newPassword"),
+		}
+
+		user := &models.User{
 			Email:    r.FormValue("email"),
-			Username: r.FormValue("username"),
 			Password: r.FormValue("password"),
 		}
 
@@ -63,9 +68,9 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 				switch errors.Is(err, errors.New("UNIQUE constraint failed: user.username")) {
 				case true:
-					msg.Data["Username"] = "User " + newUser.Username + " already exists"
+					msg.Data["NewUsername"] = "User " + newUser.Username + " already exists"
 				case false:
-					msg.Data["Email"] = "Email " + newUser.Email + " already exists"
+					msg.Data["NewEmail"] = "Email " + newUser.Email + " already exists"
 				}
 				app.render(w, r, "authent.page.tmpl", &msg)
 			}

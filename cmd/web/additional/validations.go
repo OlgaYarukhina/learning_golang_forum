@@ -15,19 +15,21 @@ var rxPassword = regexp.MustCompile(`.{6,12}`)
 func ValidateRegistration(registr *models.User) map[string]string {
 	registr.Errors = make(map[string]string)
 
+	
+
 	matchEmail := rxEmail.Match([]byte(registr.Email))
 	if matchEmail == false {
-		registr.Errors["Email"] = "Please enter a valid email address"
+		registr.Errors["NewEmail"] = "Please enter a valid email address"
 	}
 
 	matchName := rxUserName.Match([]byte(registr.Username))
 	if matchName == false {
-		registr.Errors["Username"] = "User name must contain at least 4 signs"
+		registr.Errors["NewUsername"] = "User name must contain at least 4 signs"
 	}
 
 	matchPW := rxPassword.Match([]byte(registr.Password))
 	if matchPW == false {
-		registr.Errors["Password"] = "User password must contain at least 6 signs"
+		registr.Errors["NewPassword"] = "User password must contain at least 6 signs"
 	}
 	fmt.Println(registr.Errors)
 
