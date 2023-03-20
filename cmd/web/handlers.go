@@ -41,14 +41,14 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		newUser := &models.User{
 			Email:    r.FormValue("newEmail"),
-			Username: r.FormValue("newUsername"),
+			UserName: r.FormValue("newUsername"),
 			Password: r.FormValue("newPassword"),
 		}
 
-		user := &models.User{
-			Email:    r.FormValue("email"),
-			Password: r.FormValue("password"),
-		}
+		// user := &models.User{
+		// 	Email:    r.FormValue("email"),
+		// 	Password: r.FormValue("password"),
+		// }
 
 		msg.Data = additional.ValidateRegistration(newUser)
 
@@ -60,7 +60,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			hashedPassword, err := additional.HashPassword(newUser.Password)
 
 			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
-			err = app.Users.Insert(newUser.Username, hashedPassword, newUser.Email)
+			err = app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
 			if errors.As(err, &app.sqlError) {
 				app.ErrorLog.Println(err)
 				// return wich fild is not unic
@@ -68,7 +68,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 				switch errors.Is(err, errors.New("UNIQUE constraint failed: user.username")) {
 				case true:
-					msg.Data["NewUsername"] = "User " + newUser.Username + " already exists"
+					msg.Data["NewUsername"] = "User " + newUser.UserName + " already exists"
 				case false:
 					msg.Data["NewEmail"] = "Email " + newUser.Email + " already exists"
 				}
@@ -139,7 +139,7 @@ func (app *Application) authorization(w http.ResponseWriter, r *http.Request) {
 			expiresAt := time.Now().Add(120 * time.Second)
 
 			//заполняем массив, куда входит токен и имя пользователя
-			app.Session[sessionToken] = models.Session{Username: user.Username, Expiry: expiresAt}
+			app.Session[sessionToken] = models.Session{Username: user.UserName, Expiry: expiresAt}
 
 			//устанавливаем куки пользователю и записываем туда имя его и токен
 			http.SetCookie(w, &http.Cookie{

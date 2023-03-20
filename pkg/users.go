@@ -13,7 +13,7 @@ func (m *UserModel) GetUserByUsername(username string) (User, error) {
 	stmt := `SELECT * FROM user WHERE username = ?`
 	s := User{}
 	row := m.DB.QueryRow(stmt, username)
-	err := row.Scan(&s.ID, &s.Username, &s.Password, &s.Email, &s.Created_at)
+	err := row.Scan(&s.ID, &s.UserName, &s.Password, &s.Email, &s.Created_at)
 	if err != nil {
 		return s, nil
 	}
@@ -39,7 +39,7 @@ func (m *UserModel) CheckUser(email string) (User, error) {
 	stmt := `SELECT * FROM user WHERE email = ?`
 	s := User{}
 	row := m.DB.QueryRow(stmt, email)
-	err := row.Scan(&s.ID, &s.Username, &s.Password, &s.Email, &s.Created_at)
+	err := row.Scan(&s.ID, &s.UserName, &s.Password, &s.Email, &s.Created_at)
 	if err != nil {
 		return s, nil
 	}

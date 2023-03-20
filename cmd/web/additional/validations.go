@@ -22,9 +22,9 @@ func ValidateRegistration(registr *models.User) map[string]string {
 		registr.Errors["NewEmail"] = "Please enter a valid email address"
 	}
 
-	matchName := rxUserName.Match([]byte(registr.Username))
+	matchName := rxUserName.Match([]byte(registr.UserName))
 	if matchName == false {
-		registr.Errors["NewUsername"] = "User name must contain at least 4 signs"
+		registr.Errors["NewUser"] = "User name must contain at least 4 signs"
 	}
 
 	matchPW := rxPassword.Match([]byte(registr.Password))

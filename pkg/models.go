@@ -9,7 +9,7 @@ var ErrNoRecord = errors.New("models: подходящей записи не н�
 
 type User struct {
 	ID         int
-	Username   string
+	UserName   string
 	Password   string
 	Email      string
 	Errors     map[string]string
