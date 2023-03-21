@@ -85,15 +85,17 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			//хешируем пароль
 			hashedPassword, err := additional.HashPassword(newUser.Password)
 			err = app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
+			checkUnick := err.Error()
+			
 			if errors.As(err, &app.sqlError) {
-				app.ErrorLog.Println(err)
-				msg.Data["NewUserExist"] = "User name: " + newUser.UserName + " or Email: " + newUser.Email + " already exist! Please, login or create other user"
-				// switch errors.Is(err, errors.New("UNIQUE constraint failed: user.username")) {
-				// case true:
-				// 	msg.Data["NewUserExist"] = "User name" + newUser.UserName +  "or Email" +newUser.Email +"already exists"
-				// case false:
-				// 	msg.Data["NewUserExist "] = " " + newUser.Email + " already exists"
-				// }
+				//app.ErrorLog.Println(err)
+				//msg.Data["NewUserExist"] = "User name: " + newUser.UserName + " or Email: " + newUser.Email + " already exist! Please, login or create other user"
+				switch checkUnick {
+				case "UNIQUE constraint failed: user.email":
+					msg.Data["NewUserExist"] = "Email " +newUser.Email +" already exists"
+				case "UNIQUE constraint failed: user.username":
+					msg.Data["NewUserExist"] = "User name " + newUser.UserName + " already exists"
+				}
 				app.render(w, r, "authent.page.tmpl", &msg)
 			} else {
 				// show page with cogratulations or home page with button "Logout"
