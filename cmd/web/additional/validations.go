@@ -35,3 +35,5 @@ func ValidateRegistration(registr *models.User) map[string]string {
 
 	return registr.Errors
 }
+
+

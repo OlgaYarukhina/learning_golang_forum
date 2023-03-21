@@ -82,17 +82,22 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 		switch len(msg.Data) {
 		case 0:
-			// show page with cogratulations or home page with button "Logout"
-			app.render(w, r, "home.page.tmpl", &templateData{})
 			//хешируем пароль
 			hashedPassword, err := additional.HashPassword(newUser.Password)
-
-			//модель хранится в app, если ты работаешь с моделями, то только в handler работай
 			err = app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
 			if errors.As(err, &app.sqlError) {
 				app.ErrorLog.Println(err)
 				msg.Data["NewUserExist"] = "User name: " + newUser.UserName +  " or Email: " +newUser.Email +" already exist! Please, login or create other user"
+				// switch errors.Is(err, errors.New("UNIQUE constraint failed: user.username")) {
+				// case true:
+				// 	msg.Data["NewUserExist"] = "User name" + newUser.UserName +  "or Email" +newUser.Email +"already exists"
+				// case false:
+				// 	msg.Data["NewUserExist "] = " " + newUser.Email + " already exists"
+				// }
 				app.render(w, r, "authent.page.tmpl", &msg)
+			} else {
+				// show page with cogratulations or home page with button "Logout"
+				app.render(w, r, "home.page.tmpl", &templateData{})
 			}
 
 		default:
