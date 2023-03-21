@@ -56,10 +56,10 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 				sessionToken := uuid.NewString()
 				//делаем длительность сессии 120 секунд
 				expiresAt := time.Now().Add(120 * time.Second)
-	
+
 				//заполняем массив, куда входит токен и имя пользователя
 				app.Session[sessionToken] = models.Session{Username: user.UserName, Expiry: expiresAt}
-	
+
 				//устанавливаем куки пользователю и записываем туда имя его и токен
 				http.SetCookie(w, &http.Cookie{
 					Name:    "session_token",
@@ -69,7 +69,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			case false:
 				fmt.Println("Problem with registration")
 			}
-	
+
 			if err != nil {
 				app.ErrorLog.Println(err)
 			}
@@ -87,7 +87,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			err = app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
 			if errors.As(err, &app.sqlError) {
 				app.ErrorLog.Println(err)
-				msg.Data["NewUserExist"] = "User name: " + newUser.UserName +  " or Email: " +newUser.Email +" already exist! Please, login or create other user"
+				msg.Data["NewUserExist"] = "User name: " + newUser.UserName + " or Email: " + newUser.Email + " already exist! Please, login or create other user"
 				// switch errors.Is(err, errors.New("UNIQUE constraint failed: user.username")) {
 				// case true:
 				// 	msg.Data["NewUserExist"] = "User name" + newUser.UserName +  "or Email" +newUser.Email +"already exists"
@@ -105,19 +105,16 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	
 	if r.Method != "POST" {
 		app.render(w, r, "authent.page.tmpl", &templateData{})
 	}
 }
 
-
-
 func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 	var data templateData
-	var allCategories =  app.Posts.GetCategories()
+	var allCategories = app.Posts.GetCategories()
 	data.DataArray = make(map[string][]string)
-	data.DataArray ["Categories"] = allCategories
+	data.DataArray["Categories"] = allCategories
 
 	fmt.Println(data)
 
@@ -148,45 +145,3 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 	}
 	app.render(w, r, "workspace.page.tmpl", &data)
 }
-
-
-// func (app *Application) authorization(w http.ResponseWriter, r *http.Request) {
-
-// 	if r.Method == "POST" {
-
-// 		email := r.FormValue("email")
-// 		fmt.Println(email)
-// 		password := r.FormValue("password")
-// 		user, err := app.Users.CheckUser(email) // get user by email
-
-// 		switch additional.CheckPasswordHash(password, user.Password) { //проверяем равен ли пароль который ввел пользователь паролю в БД
-// 		case true:
-// 			//создаем токен
-// 			sessionToken := uuid.NewString()
-// 			//делаем длительность сессии 120 секунд
-// 			expiresAt := time.Now().Add(120 * time.Second)
-
-// 			//заполняем массив, куда входит токен и имя пользователя
-// 			app.Session[sessionToken] = models.Session{Username: user.UserName, Expiry: expiresAt}
-
-// 			//устанавливаем куки пользователю и записываем туда имя его и токен
-// 			http.SetCookie(w, &http.Cookie{
-// 				Name:    "session_token",
-// 				Value:   sessionToken,
-// 				Expires: expiresAt,
-// 			})
-// 		case false:
-// 			fmt.Println("bad")
-// 		}
-
-// 		if err != nil {
-// 			app.ErrorLog.Println(err)
-// 		}
-// 		http.Redirect(w, r, "/", 303)
-// 		return
-// 	}
-// 	if r.Method != "POST" {
-// 		//на будущее, никогда не ставь app render в самом начале функции
-// 		app.render(w, r, "authent.page.tmpl", &templateData{})
-// 	}
-// }
