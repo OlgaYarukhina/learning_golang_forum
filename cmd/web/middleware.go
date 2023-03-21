@@ -10,7 +10,7 @@ func (app *Application) checkAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie("session_token") //получаем токен
 		if err != nil || err == http.ErrNoCookie {
-			http.Redirect(w, r, "/login", 302)
+			http.Redirect(w, r, "/authentication", 302)
 			return
 		}
 
@@ -18,13 +18,13 @@ func (app *Application) checkAuth(next http.HandlerFunc) http.HandlerFunc {
 
 		userSession, exists := app.Session[token]
 		if !exists {
-			http.Redirect(w, r, "/login", 302)
+			http.Redirect(w, r, "/authentication", 302)
 			return
 		}
 
 		if models.Session.IsExpired(userSession) {
 			delete(app.Session, token)
-			http.Redirect(w, r, "/login", 302)
+			http.Redirect(w, r, "/authentication", 302)
 			return
 		}
 		next(w, r)
