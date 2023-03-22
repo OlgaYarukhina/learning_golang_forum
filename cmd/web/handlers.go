@@ -6,6 +6,7 @@ import (
 	"forum/cmd/web/additional"
 	models "forum/pkg"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -133,17 +134,17 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 		//получаем всю информацию из базы данных юзера кому принадлежит этот username
 		user, err := app.Users.GetUserByUsername(userSession.Username)
 
-		//category := r.FormValue("category")
-		//categoryId, _ := strconv.Atoi(category)
+		category := r.FormValue("category")
+		categoryId, _ := strconv.Atoi(category)
 
 		newPost := &models.Post{
 			User_id:      user.ID,
 			Title:        r.FormValue("title"),
-			Category_id:  r.FormValue("category"),
+			Category_id:  categoryId,
 			Content:      r.FormValue("content"),
 		}
 
-		err = app.Posts.Insert(newPost.Title, newPost.Category_id, newPost.Content, newPost.User_id)
+		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.Category_id, newPost.User_id)
 		if err != nil {
 			app.ErrorLog.Println(err)
 		}

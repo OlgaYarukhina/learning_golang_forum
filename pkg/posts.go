@@ -9,11 +9,11 @@ type PostModel struct {
 	DB *sql.DB
 }
 
-func (m *PostModel) Insert(header, category, description string, userId int) error {
-	stmt := `INSERT INTO post (header, description,user_id, created_at)
-    VALUES(?,?,?, current_date)`
+func (m *PostModel) Insert(header, description string, categoryId, userId int) error {
+	stmt := `INSERT INTO post (header, description, category_id, user_id, created_at)
+    VALUES(?,?,?,?, current_date)`
 
-	result, err := m.DB.Exec(stmt, header, description, userId)
+	result, err := m.DB.Exec(stmt, header, description, categoryId, userId)
 	if err != nil {
 		return err
 	}

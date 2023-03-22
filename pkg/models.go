@@ -19,7 +19,7 @@ type User struct {
 type Post struct {
 	ID           int
 	Title        string
-	Category_id  string
+	Category_id  int
 	User_id      int
 	Content      string
 	Created_at   time.Time
