@@ -1,13 +1,14 @@
 package main
 
 import (
+	models "forum/pkg"
 	"html/template"
 	"path/filepath"
 )
 
 type templateData struct {
 	Data map[string]string
-	DataArray map[string][]string
+	DataCategories []*models.Category
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

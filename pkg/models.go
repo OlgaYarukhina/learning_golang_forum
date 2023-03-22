@@ -17,12 +17,12 @@ type User struct {
 }
 
 type Post struct {
-	ID         int
-	Title      string
-	Category   string
-	User_id    int
-	Content    string
-	Created_at time.Time
+	ID           int
+	Title        string
+	Category_id  string
+	User_id      int
+	Content      string
+	Created_at   time.Time
 }
 
 type Category struct {

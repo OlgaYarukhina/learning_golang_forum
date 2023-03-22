@@ -27,8 +27,8 @@
 
                   <select class="form-select has-validation" id="category" name="category" required>
                       <option selected>Choose category</option>
-                      {{range .DataArray.Categories}}
-                      <option value="">{{.}}</option>
+                      {{range .DataCategories}}
+                      <option value="{{.ID}}">{{.Name}}</option>
                       {{end}}
                   </select>
 

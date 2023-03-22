@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 )
 
@@ -11,29 +10,24 @@ type CategoryModel struct {
 }
 
 // Get all categories
-func (m *CategoryModel) GetCategories() []string {
-	var name string
-	var allCategories []string
+func (m *CategoryModel) GetCategories() []*Category {
+	var allCategories []*Category
 
-	rows, err := m.DB.Query(`SELECT name FROM category`)
+	rows, err := m.DB.Query(`SELECT * FROM category`)
 	if err != nil {
 		log.Println(err)
 	}
-	fmt.Println(rows)
 
 	for rows.Next() {
-		err := rows.Scan(&name)
+		category := &Category{}
+		err := rows.Scan(&category.ID, &category.Name)
 		if err != nil {
 			log.Println("Something wrong with db")
 			log.Println(err)
 			return nil
 		}
-		fmt.Println("Here1")
-		allCategories = append(allCategories, name)
+		allCategories = append(allCategories, category)
 	}
-	
-	fmt.Println("Here2")
-	fmt.Println(allCategories)
 
 	return allCategories
 }

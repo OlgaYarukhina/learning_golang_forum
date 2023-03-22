@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"forum/cmd/web/additional"
 	models "forum/pkg"
-	"github.com/google/uuid"
 	"net/http"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // array contains session_token + username
@@ -118,10 +119,8 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 	var data templateData
 	var allCategories = app.Categories.GetCategories()
-	data.DataArray = make(map[string][]string)
-	data.DataArray["Categories"] = allCategories
-
-	fmt.Println(data)
+	
+	data.DataCategories = allCategories
 
 	if r.Method == "POST" {
 
@@ -134,14 +133,19 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 		//получаем всю информацию из базы данных юзера кому принадлежит этот username
 		user, err := app.Users.GetUserByUsername(userSession.Username)
 
+		//category := r.FormValue("category")
+		//categoryId, _ := strconv.Atoi(category)
+
 		newPost := &models.Post{
-			User_id:  user.ID,
-			Title:    r.FormValue("title"),
-			Category: r.FormValue("category"),
-			Content:  r.FormValue("content"),
+			User_id:      user.ID,
+			Title:        r.FormValue("title"),
+			Category_id:  r.FormValue("category"),
+			Content:      r.FormValue("content"),
 		}
 
-		err = app.Posts.Insert(newPost.Title, newPost.Category, newPost.Content, newPost.User_id)
+		fmt.Println(newPost) // can not catch category
+
+		err = app.Posts.Insert(newPost.Title, newPost.Category_id, newPost.Content, newPost.User_id)
 		if err != nil {
 			app.ErrorLog.Println(err)
 		}
