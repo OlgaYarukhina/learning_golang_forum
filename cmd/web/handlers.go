@@ -143,8 +143,6 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 			Content:      r.FormValue("content"),
 		}
 
-		fmt.Println(newPost) // can not catch category
-
 		err = app.Posts.Insert(newPost.Title, newPost.Category_id, newPost.Content, newPost.User_id)
 		if err != nil {
 			app.ErrorLog.Println(err)
