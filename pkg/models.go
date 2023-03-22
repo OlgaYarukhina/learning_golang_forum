@@ -24,3 +24,8 @@ type Post struct {
 	Content    string
 	Created_at time.Time
 }
+
+type Category struct {
+	ID          int
+	Name        string
+}

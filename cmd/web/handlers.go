@@ -117,7 +117,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 	var data templateData
-	var allCategories = app.Posts.GetCategories()
+	var allCategories = app.Categories.GetCategories()
 	data.DataArray = make(map[string][]string)
 	data.DataArray["Categories"] = allCategories
 

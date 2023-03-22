@@ -21,6 +21,7 @@ type Application struct {
 	Session       map[string]models.Session
 	Users         *models.UserModel
 	Posts         *models.PostModel
+	Categories    *models.CategoryModel
 }
 
 var app Application
@@ -47,6 +48,7 @@ func main() {
 		Session:       map[string]models.Session{},
 		Users:         &models.UserModel{DB: db},
 		Posts:         &models.PostModel{DB: db},
+		Categories:    &models.CategoryModel{DB: db},
 	}
 
 	flag.Parse()
