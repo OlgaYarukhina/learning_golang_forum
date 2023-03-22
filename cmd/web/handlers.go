@@ -67,7 +67,10 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 					Expires: expiresAt,
 				})
 			case false:
-				fmt.Println("Problem with registration")
+				msg.Data = make(map[string]string)
+				msg.Data["WrongUserData"] = "Email: " + email + " or Password is wrong! Please, try again"
+				fmt.Println("Problem with login")
+				app.render(w, r, "authent.page.tmpl", &msg)
 			}
 
 			if err != nil {

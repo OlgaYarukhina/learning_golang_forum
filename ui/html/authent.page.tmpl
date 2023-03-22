@@ -9,6 +9,9 @@
         <div class="col">
             <h3>Authentication</h3>
             <h4>Log in</h4>
+            {{ with .Data.WrongUserData }} 
+            <p class="error">{{ . }}</p>
+            {{ end }}
             <form class="row g-3 needs-validation" method="POST" action="/authentication">
               <div class="col-md-4">
                   <label for="email" class="form-label">Email</label>
