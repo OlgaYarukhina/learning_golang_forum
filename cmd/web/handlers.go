@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"forum/cmd/web/additional"
 	models "forum/pkg"
@@ -83,25 +82,20 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		}
 
 		data.Data = additional.ValidateRegistration(newUser)
-		fmt.Println(newUser)
 
-		switch len(data.Data) {
-		case 0:
+		if len(data.Data) == 0 {
 			//хешируем пароль
 			hashedPassword, err := additional.HashPassword(newUser.Password)
 			err = app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
+			fmt.Println(err)
 
-
-
-// here is problem
+// here is problem, it create new user but then check one more time
 // it check twice, if is it correct new use
 
-
-
-
 			checkUnick := err.Error()
+			fmt.Println(checkUnick)
 			
-			if errors.As(err, &app.sqlError) {
+			if checkUnick != "" {
 				//app.ErrorLog.Println(err)
 				//msg.Data["NewUserExist"] = "User name: " + newUser.UserName + " or Email: " + newUser.Email + " already exist! Please, login or create other user"
 				switch checkUnick {
@@ -115,8 +109,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 				// show page with cogratulations or home page with button "Logout"
 				app.render(w, r, "home.page.tmpl", &templateData{})
 			}
-
-		default:
+		} else {
 			app.render(w, r, "authent.page.tmpl", &data)
 		}
 	}
@@ -138,7 +131,6 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 	var data templateData
 	data.Data = make(map[string]string)
 	data.DataCategories = app.Categories.GetCategories()
-	fmt.Println(user.ID)
 	data.DataPost = app.Posts.GetUserPosts(user.ID)
 
 	if r.Method == "POST" {

@@ -35,7 +35,7 @@ func (app *Application) yetAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie("session_token")
 		if err != nil {
-			next(w, r)
+			next(w, r) // what is this?
 			return
 		}
 		if err == nil || err != http.ErrNoCookie {
