@@ -132,11 +132,11 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 	sessionToken := c.Value
 	userSession := app.Session[sessionToken]
 	//userSeesion - хранит в себе userName конкретного пользователю кому принадлежит сам токен
-
 	//получаем всю информацию из базы данных юзера кому принадлежит этот username
 
 	user, err := app.Users.GetUserByUsername(userSession.Username)
 	var data templateData
+	data.Data = make(map[string]string)
 	data.DataCategories = app.Categories.GetCategories()
 	fmt.Println(user.ID)
 	data.DataPost = app.Posts.GetUserPosts(user.ID)
@@ -154,10 +154,16 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 
 		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.Category_id, newPost.User_id)
 		if err != nil {
+			data.Data["PostWasCreated"] = "Post was not created!"
+			app.render(w, r, "workspace.page.tmpl", &data)
 			app.ErrorLog.Println(err)
 		}
-		http.Redirect(w, r, "/", 303)
+		data.Data["PostWasCreated"] = "Post was created! Please, refresh page to see post"
+		app.render(w, r, "workspace.page.tmpl", &data)
+		data.Data["PostWasCreated"] = ""   // can not delete message from page
+		
 		return
 	}
+	
 	app.render(w, r, "workspace.page.tmpl", &data)
 }
