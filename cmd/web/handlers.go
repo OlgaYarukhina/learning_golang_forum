@@ -90,6 +90,15 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			//хешируем пароль
 			hashedPassword, err := additional.HashPassword(newUser.Password)
 			err = app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
+
+
+
+// here is problem
+// it check twice, if is it correct new use
+
+
+
+
 			checkUnick := err.Error()
 			
 			if errors.As(err, &app.sqlError) {
