@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 )
 
@@ -29,28 +30,28 @@ func (m *PostModel) Insert(header, description string, categoryId, userId int) e
 
 
 // Get one user posts
-func (m *PostModel) GetUserPosts(userID int) map[string][]string {
-	var header, description, created_at string
-	var allPosts map[string][]string
+func (m *PostModel) GetUserPosts(userID int) []*Post {
+	var allPosts []*Post
 
-	rows, err := m.DB.Query(`SELECT header, description, created_at FROM post where user_id = $userID`)
+	rows, err := m.DB.Query(`SELECT header, description FROM post WHERE user_id = ?`, userID)
 	if err != nil {
+		log.Println("Bad request")
 		log.Println(err)
 	}
 	defer rows.Close()
 
+	fmt.Println(rows)
+
 	for rows.Next() {
-		err := rows.Scan(&header, &description, &created_at)
+		post := &Post{}
+		err := rows.Scan(&post.Title, &post.Content)
 		if err != nil {
 			log.Println("Something wrong with db")
+			log.Println(err)
 			return nil
 		}
-
-		var val []string
-		val = append(val, description)
-		val = append(val, created_at)
-		allPosts[header] = val
+		allPosts = append(allPosts, post)
 	}
-
+fmt.Println(allPosts)
 	return allPosts
 }

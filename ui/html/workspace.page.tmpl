@@ -7,15 +7,28 @@
 {{define "main"}}
 <div class="container">
   <div class="row">
-    <div class="col-12">.... </div>
+    <div class="col-12"> WELCOME </div>
     <div class="col-6">
-      <h4>My posts</h4>
-      <br>Artical 1
-      <br>Artical 2
-      <br>Artical 3
+
+    <h2 class="pb-2 border-bottom">My posts</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-1">
+      {{range .DataPost}}
+      <div class="col d-flex align-items-start">
+        <div class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+          <svg class="bi" width="1em" height="1em"><use xlink:href="#toggles2"></use></svg>
+        </div>
+        <div>
+          <h3 class="fs-2">{{.Title}}</h3>
+          <p>{{.Content}}</p>
+          <a href="#" class="btn btn-dark"> Read full post & comments</a>
+        </div>
+      </div>
+      {{end}}
+    </div>
   </div>
     <div class="col-6">
-      <h4>Create post</h4>
+
+      <h2 class="pb-2 border-bottom">Create post</h2>
           
 <p></p>
       <form class="needs-validation" method="POST">

@@ -8,6 +8,7 @@ import (
 
 type templateData struct {
 	Data map[string]string
+	DataPost []*models.Post
 	DataCategories []*models.Category
 }
 
