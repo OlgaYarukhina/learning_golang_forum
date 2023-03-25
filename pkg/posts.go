@@ -2,7 +2,6 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 )
 
@@ -33,18 +32,16 @@ func (m *PostModel) Insert(header, description string, categoryId, userId int) e
 func (m *PostModel) GetUserPosts(userID int) []*Post {
 	var allPosts []*Post
 
-	rows, err := m.DB.Query(`SELECT header, description FROM post WHERE user_id = ?`, userID)
+	rows, err := m.DB.Query(`SELECT id, header, description FROM post WHERE user_id = ?`, userID)
 	if err != nil {
 		log.Println("Bad request")
 		log.Println(err)
 	}
 	defer rows.Close()
 
-	fmt.Println(rows)
-
 	for rows.Next() {
 		post := &Post{}
-		err := rows.Scan(&post.Title, &post.Content)
+		err := rows.Scan(&post.ID, &post.Title, &post.Content)
 		if err != nil {
 			log.Println("Something wrong with db")
 			log.Println(err)
@@ -52,6 +49,5 @@ func (m *PostModel) GetUserPosts(userID int) []*Post {
 		}
 		allPosts = append(allPosts, post)
 	}
-fmt.Println(allPosts)
 	return allPosts
 }
