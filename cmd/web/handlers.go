@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"forum/cmd/web/additional"
 	models "forum/pkg"
 	"net/http"
@@ -36,7 +36,6 @@ func (app *Application) account(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
-	// save all errors in one variable
 	var data templateData
 
 	if r.Method == "POST" {
@@ -44,17 +43,15 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 
 		if email != "" || password != "" {
-			user, err := app.Users.CheckUser(email) // get user by email
+			user, err := app.Users.CheckUser(email)                        // get user by email
 			switch additional.CheckPasswordHash(password, user.Password) { //проверяем равен ли пароль который ввел пользователь паролю в БД
 			case true:
 				//создаем токен
 				sessionToken := uuid.NewString()
 				//делаем длительность сессии 120 секунд
 				expiresAt := time.Now().Add(120 * time.Second)
-
 				//заполняем массив, куда входит токен и имя пользователя
 				app.Session[sessionToken] = models.Session{Username: user.UserName, Expiry: expiresAt}
-
 				//устанавливаем куки пользователю и записываем туда имя его и токен
 				http.SetCookie(w, &http.Cookie{
 					Name:    "session_token",
@@ -64,7 +61,6 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			case false:
 				data.Data = make(map[string]string)
 				data.Data["WrongUserData"] = "Email: " + email + " or Password is wrong! Please, try again"
-				fmt.Println("Problem with login")
 				app.render(w, r, "authent.page.tmpl", &data)
 			}
 
@@ -90,17 +86,8 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 					app.ErrorLog.Println(errHash)
 				}
 				err := app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
-				fmt.Println(err)
-
-				// here is problem, it create new user but then check one more time
-				// it check twice, if is it correct new use
-
+				if errors.As(err, &app.sqlError) {
 				checkUnick := err.Error()
-				fmt.Println(checkUnick)
-
-				if checkUnick != "" {
-					//app.ErrorLog.Println(err)
-					//msg.Data["NewUserExist"] = "User name: " + newUser.UserName + " or Email: " + newUser.Email + " already exist! Please, login or create other user"
 					switch checkUnick {
 					case "UNIQUE constraint failed: user.email":
 						data.Data["NewUserExist"] = "Email " + newUser.Email + " already exists"
@@ -110,7 +97,8 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 					app.render(w, r, "authent.page.tmpl", &data)
 				} else {
 					// show page with cogratulations or home page with button "Logout"
-					app.render(w, r, "home.page.tmpl", &templateData{})
+					data.Data["UserWasCreate"] = "User " + newUser.UserName + " created. Please login"
+					app.render(w, r, "authent.page.tmpl", &data)
 				}
 			} else {
 				app.render(w, r, "authent.page.tmpl", &data)
@@ -119,7 +107,6 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 	} else {
 		app.render(w, r, "authent.page.tmpl", &data)
 	}
-
 }
 
 func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
