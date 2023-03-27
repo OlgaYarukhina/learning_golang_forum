@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"errors"
 	"forum/cmd/web/additional"
 	models "forum/pkg"
 	"net/http"
@@ -36,31 +36,22 @@ func (app *Application) account(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 
-	// save all errors in one variable
 	var data templateData
 
 	if r.Method == "POST" {
-		newUser := &models.User{
-			Email:    r.FormValue("newEmail"),
-			UserName: r.FormValue("newUser"),
-			Password: r.FormValue("newPassword"),
-		}
-
 		email := r.FormValue("email")
 		password := r.FormValue("password")
-		user, err := app.Users.CheckUser(email) // get user by email
 
-		if email != "" && password != "" {
+		if email != "" || password != "" {
+			user, err := app.Users.CheckUser(email)                        // get user by email
 			switch additional.CheckPasswordHash(password, user.Password) { //проверяем равен ли пароль который ввел пользователь паролю в БД
 			case true:
 				//создаем токен
 				sessionToken := uuid.NewString()
 				//делаем длительность сессии 120 секунд
 				expiresAt := time.Now().Add(120 * time.Second)
-
 				//заполняем массив, куда входит токен и имя пользователя
 				app.Session[sessionToken] = models.Session{Username: user.UserName, Expiry: expiresAt}
-
 				//устанавливаем куки пользователю и записываем туда имя его и токен
 				http.SetCookie(w, &http.Cookie{
 					Name:    "session_token",
@@ -70,7 +61,6 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			case false:
 				data.Data = make(map[string]string)
 				data.Data["WrongUserData"] = "Email: " + email + " or Password is wrong! Please, try again"
-				fmt.Println("Problem with login")
 				app.render(w, r, "authent.page.tmpl", &data)
 			}
 
@@ -79,42 +69,42 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			}
 			http.Redirect(w, r, "/", 303)
 			return
-		}
-
-		data.Data = additional.ValidateRegistration(newUser)
-
-		if len(data.Data) == 0 {
-			//хешируем пароль
-			hashedPassword, err := additional.HashPassword(newUser.Password)
-			err = app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
-			fmt.Println(err)
-
-// here is problem, it create new user but then check one more time
-// it check twice, if is it correct new use
-
-			checkUnick := err.Error()
-			fmt.Println(checkUnick)
-			
-			if checkUnick != "" {
-				//app.ErrorLog.Println(err)
-				//msg.Data["NewUserExist"] = "User name: " + newUser.UserName + " or Email: " + newUser.Email + " already exist! Please, login or create other user"
-				switch checkUnick {
-				case "UNIQUE constraint failed: user.email":
-					data.Data["NewUserExist"] = "Email " +newUser.Email +" already exists"
-				case "UNIQUE constraint failed: user.username":
-					data.Data["NewUserExist"] = "User name " + newUser.UserName + " already exists"
-				}
-				app.render(w, r, "authent.page.tmpl", &data)
-			} else {
-				// show page with cogratulations or home page with button "Logout"
-				app.render(w, r, "home.page.tmpl", &templateData{})
-			}
 		} else {
-			app.render(w, r, "authent.page.tmpl", &data)
-		}
-	}
 
-	if r.Method != "POST" {
+			newUser := &models.User{
+				Email:    r.FormValue("newEmail"),
+				UserName: r.FormValue("newUser"),
+				Password: r.FormValue("newPassword"),
+			}
+
+			data.Data = additional.ValidateRegistration(newUser)
+
+			if len(data.Data) == 0 {
+				//хешируем пароль
+				hashedPassword, errHash := additional.HashPassword(newUser.Password)
+				if errHash != nil {
+					app.ErrorLog.Println(errHash)
+				}
+				err := app.Users.Insert(newUser.UserName, hashedPassword, newUser.Email)
+				if errors.As(err, &app.sqlError) {
+				checkUnick := err.Error()
+					switch checkUnick {
+					case "UNIQUE constraint failed: user.email":
+						data.Data["NewUserExist"] = "Email " + newUser.Email + " already exists"
+					case "UNIQUE constraint failed: user.username":
+						data.Data["NewUserExist"] = "User name " + newUser.UserName + " already exists"
+					}
+					app.render(w, r, "authent.page.tmpl", &data)
+				} else {
+					// show page with cogratulations or home page with button "Logout"
+					data.Data["UserWasCreate"] = "User " + newUser.UserName + " created. Please login"
+					app.render(w, r, "authent.page.tmpl", &data)
+				}
+			} else {
+				app.render(w, r, "authent.page.tmpl", &data)
+			}
+		}
+	} else {
 		app.render(w, r, "authent.page.tmpl", &data)
 	}
 }
@@ -138,10 +128,10 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 		categoryId, _ := strconv.Atoi(category)
 
 		newPost := &models.Post{
-			User_id:      user.ID,
-			Title:        r.FormValue("title"),
-			Category_id:  categoryId,
-			Content:      r.FormValue("content"),
+			User_id:     user.ID,
+			Title:       r.FormValue("title"),
+			Category_id: categoryId,
+			Content:     r.FormValue("content"),
 		}
 
 		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.Category_id, newPost.User_id)
@@ -152,10 +142,10 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 		}
 		data.Data["PostWasCreated"] = "Post was created! Please, refresh page to see post"
 		app.render(w, r, "workspace.page.tmpl", &data)
-		data.Data["PostWasCreated"] = ""   // can not delete message from page
-		
+		data.Data["PostWasCreated"] = "" // can not delete message from page
+
 		return
 	}
-	
+
 	app.render(w, r, "workspace.page.tmpl", &data)
 }

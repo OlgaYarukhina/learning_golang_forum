@@ -8,6 +8,9 @@
     <div class="row">
         <div class="col">
             <h3>Authentication</h3>
+            {{ with .Data.UserWasCreate }}
+            <p class="error">{{ . }}</p>
+            {{ end }}
             <h4>Log in</h4>
             {{ with .Data.WrongUserData }} 
             <p class="error">{{ . }}</p>
