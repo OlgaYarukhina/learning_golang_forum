@@ -14,13 +14,14 @@
 
     <body>
     
-         <!--Header-->
+         <!--Header without loging-->
+         {{ if eq .CheckLogin false }}
          <header class="p-3 text-bg-dark">
             <div class="container">
               <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                   <li><a href="/" class="nav-link px-2 text-secondary">...</a></li>
-                  <li><a href="/" class="nav-link px-2 text-white">WELCOME TO SPACE</a></li>
+                  <li><a href="/" class="nav-link px-2 text-white">WELCOME TO IT</a></li>
                 </ul>
         
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
@@ -35,10 +36,30 @@
             </div>
           </header>
 
+              <!--Header with loging-->
+          {{ else }}
+         <header class="p-3 text-bg-dark">
+          <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+              <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 text-secondary">...</a></li>
+                <li><a href="/" class="nav-link px-2 text-white">WELCOME TO IT</a></li>
+              </ul>
+              <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+              </form>
+              <div class="text-end">
+                <a role="button" class="btn btn-outline-light me-2" href="/logout">Logout</a>
+                <a role="button" class="btn btn-warning">Logout</a>
+              </div>
+            </div>
+          </div>
+        </header>
+        {{ end }}
+
         <main>
             {{template "main" .}}
         </main>
-        <!-- Вызываем шаблон подвала -->
         {{template "footer" .}}
     </body>
 </html>

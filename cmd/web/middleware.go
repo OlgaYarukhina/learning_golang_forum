@@ -1,15 +1,17 @@
 package main
 
 import (
+	"fmt"
 	models "forum/pkg"
 	"net/http"
 )
 
-//проверяем пользователь залогинен или нет, если нет, то мы не даем ему доступ к функции в handler
+
 func (app *Application) checkAuth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c, err := r.Cookie("session_token") //получаем токен
 		if err != nil || err == http.ErrNoCookie {
+			data.CheckLogin = false
 			http.Redirect(w, r, "/authentication", 302)
 			return
 		}
@@ -18,12 +20,18 @@ func (app *Application) checkAuth(next http.HandlerFunc) http.HandlerFunc {
 
 		userSession, exists := app.Session[token]
 		if !exists {
+			data.CheckLogin = false
+			fmt.Println("Here2")
+			fmt.Println(data.CheckLogin)
 			http.Redirect(w, r, "/authentication", 302)
 			return
 		}
 
 		if models.Session.IsExpired(userSession) {
 			delete(app.Session, token)
+			data.CheckLogin = false
+			fmt.Println("Here3")
+			fmt.Println(data.CheckLogin)
 			http.Redirect(w, r, "/authentication", 302)
 			return
 		}

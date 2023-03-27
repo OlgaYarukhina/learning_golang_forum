@@ -7,8 +7,9 @@ import (
 )
 
 type templateData struct {
-	Data map[string]string
-	DataPost []*models.Post
+	CheckLogin     bool
+	Data           map[string]string
+	DataPost       []*models.Post
 	DataCategories []*models.Category
 }
 

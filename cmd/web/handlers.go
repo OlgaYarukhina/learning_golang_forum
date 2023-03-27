@@ -11,32 +11,23 @@ import (
 	"github.com/google/uuid"
 )
 
+var data templateData
+	
 // array contains session_token + username
 
-func (app *Application) home(w http.ResponseWriter, r *http.Request) {
+func (app *Application) homeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		app.notFound(w)
 		return
 	}
 
-	app.render(w, r, "home.page.tmpl", &templateData{})
+	app.render(w, r, "home.page.tmpl", &data)
 }
 
-func (app *Application) account(w http.ResponseWriter, r *http.Request) {
-	c, _ := r.Cookie("session_token")
-	sessionToken := c.Value
-	userSession := app.Session[sessionToken]
 
-	var objectUser templateData
+func (app *Application) authenticationHandler(w http.ResponseWriter, r *http.Request) {
 
-	users := map[string]string{"username": userSession.Username}
-	objectUser.Data = users
-	app.render(w, r, ".page.tmpl", &objectUser)
-}
-
-func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
-
-	var data templateData
+	data.Data = make(map[string]string)
 
 	if r.Method == "POST" {
 		email := r.FormValue("email")
@@ -59,7 +50,6 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 					Expires: expiresAt,
 				})
 			case false:
-				data.Data = make(map[string]string)
 				data.Data["WrongUserData"] = "Email: " + email + " or Password is wrong! Please, try again"
 				app.render(w, r, "authent.page.tmpl", &data)
 			}
@@ -67,6 +57,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				app.ErrorLog.Println(err)
 			}
+			data.CheckLogin = true
 			http.Redirect(w, r, "/", 303)
 			return
 		} else {
@@ -109,16 +100,22 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
+func (app *Application) logoutHandler(w http.ResponseWriter, r *http.Request) {
+	delete(app.Session, "UserID")
+	data.CheckLogin = false
+	http.Redirect(w, r, "/authentication", 302)
+
+}
+
+func (app *Application) workspaceHandler(w http.ResponseWriter, r *http.Request) {
 	//Получаем токен из куков
 	c, _ := r.Cookie("session_token")
 	sessionToken := c.Value
 	userSession := app.Session[sessionToken]
 	//userSeesion - хранит в себе userName конкретного пользователю кому принадлежит сам токен
 	//получаем всю информацию из базы данных юзера кому принадлежит этот username
-
 	user, err := app.Users.GetUserByUsername(userSession.Username)
-	var data templateData
+
 	data.Data = make(map[string]string)
 	data.DataCategories = app.Categories.GetCategories()
 	data.DataPost = app.Posts.GetUserPosts(user.ID)
@@ -142,10 +139,26 @@ func (app *Application) workspace(w http.ResponseWriter, r *http.Request) {
 		}
 		data.Data["PostWasCreated"] = "Post was created! Please, refresh page to see post"
 		app.render(w, r, "workspace.page.tmpl", &data)
-		data.Data["PostWasCreated"] = "" // can not delete message from page
+		
 
 		return
 	}
-
+	data.Data["PostWasCreated"] = ""
 	app.render(w, r, "workspace.page.tmpl", &data)
 }
+
+
+
+
+
+// func (app *Application) account(w http.ResponseWriter, r *http.Request) {
+// 	c, _ := r.Cookie("session_token")
+// 	sessionToken := c.Value
+// 	userSession := app.Session[sessionToken]
+
+// 	var objectUser templateData
+
+// 	users := map[string]string{"username": userSession.Username}
+// 	objectUser.Data = users
+// 	app.render(w, r, ".page.tmpl", &objectUser)
+// }
