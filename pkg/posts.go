@@ -49,5 +49,11 @@ func (m *PostModel) GetUserPosts(userID int) []*Post {
 		}
 		allPosts = append(allPosts, post)
 	}
-	return allPosts
+
+	fromLastPost := []*Post{}
+	for i:= len(allPosts)-1; i >= 0; i-- {
+		fromLastPost = append(fromLastPost, allPosts[i])
+	}
+
+	return fromLastPost
 }
