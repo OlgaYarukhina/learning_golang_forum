@@ -19,6 +19,7 @@ type application struct {
 	templateCache map[string]*template.Template
 	users         *models.UserModel
 	posts         *models.PostModel
+	categories    *models.CategoryModel
 }
 
 func main() {
@@ -28,7 +29,10 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	templateCache, _ := newTemplateCache("./ui/html/")
+	templateCache, err := newTemplateCache("./ui/html/")
+	if err != nil {
+		errorLog.Fatal(err)
+	}
 
 	db, err := openDB("./pkg/Forum.db")
 	if err != nil {
@@ -43,6 +47,7 @@ func main() {
 		templateCache: templateCache,
 		users:         &models.UserModel{DB: db},
 		posts:         &models.PostModel{DB: db},
+		categories:    &models.CategoryModel{DB: db},
 	}
 
 	flag.Parse()

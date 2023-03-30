@@ -16,10 +16,15 @@ type User struct {
 }
 
 type Post struct {
-	id          int
-	header      string
-	description string
-	category_id int
-	user_id     int
-	created_at  string
+	ID          int
+	Header      string
+	Description string
+	Category_id int
+	User_id     int
+	Created_at  string
+}
+
+type Category struct {
+	ID   int
+	Name string
 }

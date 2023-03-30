@@ -1,7 +1,41 @@
 {{template "base" .}}
- 
-{{define "title"}}Home page{{end}}
- 
+
+{{define "title"}}Home Page{{ end }}
+
 {{define "main"}}
-<h2>Latests posts</h2>
-{{end}}
+<h2>Latest Posts</h2>
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Posted at</th>
+    <th>ID</th>
+    <th>Category</th>
+    <label for="categories">Choose a category:</label>
+    <select name="categories" id="categories">
+      <option value=""></option>
+      {{
+        range.Categories
+      }}
+      <option value="{{.ID}}">{{.Name}}</option>
+      {{
+        end
+      }}
+    </select>
+  </tr>
+  {{
+    range.Posts
+  }}
+  <tr>
+    <td>
+      <a href="/post?id={{.ID}}">{{.Header}}</a>
+    </td>
+    <td>{{.Created_at}}</td>
+    <td>#{{.ID}}</td>
+    <td>#{{.Category_id}}</td>
+  </tr>
+  {{
+    end
+  }}
+</table>
+
+{{ end }}

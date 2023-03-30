@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	models "forum/pkg"
+	"html/template"
 	"net/http"
 	"strconv"
 )
@@ -13,7 +13,23 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
-	app.render(w, r, "home.page.tmpl", &templateData{})
+
+	s, err := app.posts.Latest()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	c, err := app.categories.GetCategories()
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.render(w, r, "home.page.tmpl", &templateData{
+		Posts:      s,
+		Categories: c,
+	})
 
 }
 
@@ -24,7 +40,7 @@ func (app *application) showPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s, err := app.posts.Get(id)
+	s, err := app.posts.GetPost(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
@@ -34,5 +50,24 @@ func (app *application) showPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "%v", s)
+	files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	err = ts.Execute(w, s)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	app.render(w, r, "show.page.tmpl", &templateData{
+		Post: s,
+	})
 }
