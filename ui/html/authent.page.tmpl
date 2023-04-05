@@ -16,17 +16,12 @@
                     <span class="input-group-text">@</span>
                     <input type="text" class="form-control" id="email" name="email" required>
                   </div>
-                  {{ with .Data.Email }}
-                  <p class="error">{{ . }}</p>
-                  {{ end }}
+
                 </div>
 
               <div class="col-md-4">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password"  value="" required>
-                {{ with .Data.Password }}
-                <p class="error" >{{ . }}</p>
-                {{ end }}
               </div>
 
               <div class="col-12">
@@ -44,11 +39,17 @@
                       <span class="input-group-text">@</span>
                       <input type="text" class="form-control" id="email" name="email" required>
                     </div>
+                     {{ with .Data.Email }}
+                     <p class="error">{{ . }}</p>
+                     {{ end }}
                   </div>
 
                 <div class="col-md-4">
                   <label for="username" class="form-label">User name</label>
                   <input type="text" class="form-control" id="username" name="username" value="" required>
+                   {{ with .Data.Username }}
+                   <p class="error" >{{ . }}</p>
+                   {{ end }}
                 </div>
                 <div class="col-md-4">
                   <label for="password" class="form-label">Password</label>

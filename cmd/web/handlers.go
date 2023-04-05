@@ -50,7 +50,7 @@ func (app *Application) authentication(w http.ResponseWriter, r *http.Request) {
 		switch len(msg.Data) {
 		case 0:
 			// show page with cogratulations or home page with button "Logout"
-			app.render(w, r, "home.page.tmpl", &templateData{})
+
 			//хешируем пароль
 			hashedPassword, err := additional.HashPassword(newUser.Password)
 
