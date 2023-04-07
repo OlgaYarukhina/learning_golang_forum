@@ -11,6 +11,7 @@ type templateData struct {
 	Posts      []*models.Post
 	Category   *models.Category
 	Categories []*models.Category
+	Comment    []*models.Comment
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {

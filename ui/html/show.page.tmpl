@@ -14,5 +14,13 @@
             <time>Posted at: {{.Created_at}}</time>
         </div>
     </div>
+
+    {{end}}
+    {{range.Comment}}
+        <div class='comments'>
+            <span>#{{.Username}}
+            {{.Comment}}
+            {{.Created_at}}
+        </div>
     {{end}}
 {{end}}

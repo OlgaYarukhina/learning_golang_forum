@@ -10,17 +10,20 @@
     <th>Posted at</th>
     <th>ID</th>
     <th>Category</th>
+    <th>Like</th>
     <label for="categories">Choose a category:</label>
-    <select name="categories" id="categories">
-      <option value=""></option>
-      {{
-        range.Categories
-      }}
-      <option value="{{.ID}}">{{.Name}}</option>
-      {{
-        end
-      }}
-    </select>
+    <form id="filter-form">
+        <select onchange="this.form.submit()" name="categories" id="categories">
+          <option value=""></option>
+          {{
+            range.Categories
+          }}
+          <option value="{{.ID}}">{{.Name}}</option>
+          {{
+            end
+          }}
+        </select>
+    </form>
   </tr>
   {{
     range.Posts
@@ -32,6 +35,7 @@
     <td>{{.Created_at}}</td>
     <td>#{{.ID}}</td>
     <td>#{{.Category_id}}</td>
+    <td>#{{.Like}}</td>
   </tr>
   {{
     end

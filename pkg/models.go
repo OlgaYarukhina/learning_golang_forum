@@ -21,7 +21,23 @@ type Post struct {
 	Description string
 	Category_id int
 	User_id     int
+	Like        int
 	Created_at  string
+}
+
+type Comment struct {
+	ID         int
+	Comment    string
+	Post_id    int
+	User_id    int
+	Username   string
+	Created_at string
+}
+
+type Like struct {
+	ID      int
+	User_id int
+	Post_id int
 }
 
 type Category struct {
