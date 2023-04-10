@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"time"
 )
 
 type UserModel struct {
@@ -22,12 +23,12 @@ func (m *UserModel) GetUserByUsername(username string) (User, error) {
 }
 
 // Insert - Метод для создания
-func (m *UserModel) Insert(username, password, email string) error {
+func (m *UserModel) Insert(username, password, email string, created_at time.Time) error {
 
 	stmt := `INSERT INTO user (username, password, email, created_at)
     VALUES(?, ?, ?, current_date)`
 
-	_, err := m.DB.Exec(stmt, username, password, email)
+	_, err := m.DB.Exec(stmt, username, password, email, created_at)
 	if err != nil {
 		return err
 	}

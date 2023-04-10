@@ -1,0 +1,35 @@
+{{template "base" .}}
+
+{{define "title"}}Post #{{.Post.ID}}{{end}}
+
+{{define "main"}}
+    {{with .Post}}
+    <div class='post'>
+        <div class='metadata'>
+            <strong>{{.Title}}</strong>
+            <span>#{{.ID}}</span>
+        </div>
+        <pre><code>{{.Content}}</code></pre>
+        <div class='metadata'>
+            <time>Posted at: {{.Created_at}}</time>
+        </div>
+    </div>
+
+    {{end}}
+    {{range.Comment}}
+        <div class='comments'>
+            <span>#{{.Username}}
+            {{.Comment}}
+            {{.Created_at}}
+        </div>
+    {{end}}
+
+    <div>
+    {{ with .Post}}
+    <form method="POST" action="/post?id={{.ID}}">
+    {{ end}}
+    <input type="text" name="comment">
+    <input type="submit">
+    </form>
+    </div>
+{{end}}

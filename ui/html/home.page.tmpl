@@ -2,33 +2,50 @@
 
 {{template "base" .}}
 
-{{define "title"}}Home page{{end}}
+{{define "title"}}Home Page{{ end }}
 
 {{define "main"}}
 
-<div class="container">
-  <div class="row">
-    <div class="col-12">Something here ... </div>
-    <div class="col-6">
-      All articals
-      <p>Helloooo</p>
-    </div>
-    <div class="col-6">
-      <h4>Loging for create artical, read full artical or comment!</h4>
-      <p></p>
-
-      <a role="button" class="btn btn-dark" href="/my-workspace">Create artical</a>
-        <p></p>
-    </div>
-  </div>
-</div>
-</div>
 
 
+<h2>Latest Posts</h2>
+<a role="button" class="btn btn-dark" href="/createPost">Create artical</a>
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Posted at</th>
+    <th>ID</th>
+    <th>Category</th>
+    <th>Like</th>
+    <label for="categories">Choose a category:</label>
+    <form id="filter-form">
+        <select onchange="this.form.submit()" name="categories" id="categories">
+          <option value=""></option>
+          {{
+            range.Categories
+          }}
+          <option value="{{.ID}}">{{.Name}}</option>
+          {{
+            end
+          }}
+        </select>
+    </form>
+  </tr>
+  {{
+    range.Posts
+  }}
+  <tr>
+    <td>
+      <a href="/post?id={{.ID}}">{{.Title}}</a>
+    </td>
+    <td>{{.Created_at}}</td>
+    <td>#{{.ID}}</td>
+    <td>#{{.Category}}</td>
+    <td><a href="/like?id={{.ID}}">#{{.Like}}</a></td>
+  </tr>
+  {{
+    end
+  }}
+</table>
 
-
-
-<p></p>
-
-
-{{end}}
+{{ end }}

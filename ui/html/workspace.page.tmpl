@@ -27,9 +27,13 @@
 
                   <select class="form-select has-validation" id="category" name="category" required>
                       <option selected>Choose category</option>
-                      <option value="1">Stars</option>
-                      <option value="2">Super Nova</option>
-                      <option value="3">Exoplanets</option>
+                      {{
+                        range.Categories
+                      }}
+                      <option value="{{.ID}}">{{.Name}}</option>
+                      {{
+                        end
+                      }}
                   </select>
 
 

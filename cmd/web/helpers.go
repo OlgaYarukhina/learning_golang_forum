@@ -25,7 +25,7 @@ func (app *Application) render(w http.ResponseWriter, r *http.Request, name stri
 
 	ts, ok := app.TemplateCache[name]
 	if !ok {
-		app.serverError(w, fmt.Errorf("Шаблон %s не существует!", name))
+		app.serverError(w, fmt.Errorf("the template %s doesn't exist", name))
 		return
 	}
 

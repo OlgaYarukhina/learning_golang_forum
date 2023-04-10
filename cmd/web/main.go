@@ -5,12 +5,13 @@ import (
 	"flag"
 	models "forum/pkg"
 	"github.com/mattn/go-sqlite3"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Application struct {
@@ -21,13 +22,14 @@ type Application struct {
 	Session       map[string]models.Session
 	Users         *models.UserModel
 	Posts         *models.PostModel
+	categories    *models.CategoryModel
+	comment       *models.CommentModel
 }
-
-var app Application
 
 func main() {
 
 	addr := flag.String("addr", ":4000", "Network address HTTP")
+
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -40,18 +42,20 @@ func main() {
 
 	templateCache, err := newTemplateCache("./ui/html/")
 
-	app = Application{
+	app := Application{
 		ErrorLog:      errorLog,
 		InfoLog:       infoLog,
 		TemplateCache: templateCache,
 		Session:       map[string]models.Session{},
 		Users:         &models.UserModel{DB: db},
 		Posts:         &models.PostModel{DB: db},
+		categories:    &models.CategoryModel{DB: db},
+		comment:       &models.CommentModel{DB: db},
 	}
 
 	flag.Parse()
 
-	infoLog.Printf("Starting forum on port: 4000", *addr)
+	infoLog.Printf("Starting the web server @ http://localhost%s", *addr)
 
 	srv := &http.Server{
 		Addr:     *addr,

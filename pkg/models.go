@@ -19,8 +19,29 @@ type User struct {
 type Post struct {
 	ID         int
 	Title      string
-	Category   string
+	Category   int
 	User_id    int
+	Like       int
 	Content    string
 	Created_at time.Time
+}
+
+type Comment struct {
+	ID         int
+	Comment    string
+	Post_id    int
+	User_id    int
+	Username   string
+	Created_at string
+}
+
+type Like struct {
+	ID      int
+	User_id int
+	Post_id int
+}
+
+type Category struct {
+	ID   int
+	Name string
 }

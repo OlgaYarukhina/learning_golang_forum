@@ -39,7 +39,7 @@ func (app *Application) yetAuth(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		if err == nil || err != http.ErrNoCookie {
-			http.Redirect(w, r, "/account", 302)
+			http.Redirect(w, r, "/", 302)
 			return
 		}
 
@@ -47,7 +47,7 @@ func (app *Application) yetAuth(next http.HandlerFunc) http.HandlerFunc {
 
 		userSession, exists := app.Session[token]
 		if exists {
-			http.Redirect(w, r, "/account", 302)
+			http.Redirect(w, r, "/", 302)
 			return
 		}
 

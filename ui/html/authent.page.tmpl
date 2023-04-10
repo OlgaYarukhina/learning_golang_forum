@@ -16,6 +16,9 @@
                     <span class="input-group-text">@</span>
                     <input type="text" class="form-control" id="email" name="email" required>
                   </div>
+                  {{ with .Data.Errorlogin }}
+                      <p class="error">{{ . }}</p>
+                  {{ end }}
 
                 </div>
 
@@ -31,7 +34,7 @@
             <br/>
             <br/>
             <h4>New user</h4>
-            <form class="row g-3 needs-validation" method="POST" action="/authentication">
+            <form class="row g-3 needs-validation" method="POST" action="/registration">
                 <div class="col-md-4">
 
                     <label for="email" class="form-label">Email</label>
