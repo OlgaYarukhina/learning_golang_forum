@@ -40,7 +40,7 @@
           </td>
           <td>{{.Created_at}}</td>
           <td>#{{.ID}}</td>
-          <td>#{{.Category_id}}</td>
+          <td>#{{range .Category_name}} {{.}} {{end}}</td>
           <td><a href="/like?id={{.ID}}">#{{.Like}}</a></td>
         </tr>
         {{

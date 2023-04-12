@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -21,7 +22,8 @@ func (m *PostModel) Latest() ([]*Post, error) {
 	var posts []*Post
 	for rows.Next() {
 		s := &Post{}
-		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Category_id, &s.User_id, &s.Created_at)
+		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.User_id, &s.Created_at)
+		s.Category_name, err = m.getCategoryRelation(&s.ID)
 		s.Like, err = m.getCountLikesByPostId(&s.ID)
 		if err != nil {
 			return nil, err
@@ -34,10 +36,44 @@ func (m *PostModel) Latest() ([]*Post, error) {
 	return posts, nil
 }
 
+func (m *PostModel) getCategoryRelation(post_id *int) ([]string, error) {
+	stmt := `SELECT category_id FROM categoryPostRelation WHERE post_id = ?`
+	var array_of_names []string
+	var category_id int
+	rows, err := m.DB.Query(stmt, post_id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&category_id)
+		name, err := m.getNameOfCategoryById(&category_id)
+		if err != nil {
+			return nil, err
+		}
+		array_of_names = append(array_of_names, name)
+	}
+
+	return array_of_names, nil
+}
+
+func (m *PostModel) getNameOfCategoryById(category_id *int) (string, error) {
+	var category_name string
+	// Query for a value based on a single row.
+	if err := m.DB.QueryRow("SELECT name from category where id = ?", category_id).Scan(&category_name); err != nil {
+		if err == sql.ErrNoRows {
+			fmt.Println(err)
+		}
+		fmt.Println(err)
+	}
+	return category_name, nil
+}
+
 func (m *PostModel) GetPost(id int) (*Post, error) {
 	post := &Post{}
 	row := m.DB.QueryRow(`SELECT * FROM post WHERE ID = ?`, id)
-	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.Category_id, &post.User_id, &post.Created_at)
+	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.User_id, &post.Created_at)
+	post.Category_name, err = m.getCategoryRelation(&post.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return post, fmt.Errorf("post not found")
@@ -70,7 +106,7 @@ func (m *PostModel) getCountLikesByPostId(id *int) (int, error) {
 	return len(likes), nil
 }
 
-func (m *PostModel) Insert(header, description string, userId int, created_at time.Time) error {
+func (m *PostModel) Insert(header, description string, userId int, created_at time.Time, category []string) error {
 	stmt := `INSERT INTO post (header, description, user_id, created_at)
     VALUES(?,?,?, current_date)`
 
@@ -80,6 +116,14 @@ func (m *PostModel) Insert(header, description string, userId int, created_at ti
 	}
 
 	id, err := result.LastInsertId()
+	for _, category_id := range category {
+		cat_id, err := strconv.Atoi(category_id)
+		stmt := `INSERT INTO categoryPostRelation (post_id,category_id) VALUES (?,?)`
+		_, err = m.DB.Exec(stmt, id, cat_id)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
 	if err != nil {
 		return err
 	}
@@ -128,7 +172,7 @@ func (m *PostModel) GetPostsByCategory(id int) ([]*Post, error) {
 	var posts []*Post
 	for rows.Next() {
 		s := &Post{}
-		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Category_id, &s.User_id, &s.Created_at)
+		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Category_name, &s.User_id, &s.Created_at)
 		s.Like, err = m.getCountLikesByPostId(&s.ID)
 		if err != nil {
 			return nil, err

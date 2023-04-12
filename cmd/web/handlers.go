@@ -178,17 +178,16 @@ func (app *Application) workspaceHandler(w http.ResponseWriter, r *http.Request)
 	data.DataPost = app.Posts.GetUserPosts(user.ID)
 
 	if r.Method == "POST" {
-		category := r.FormValue("category")
-		categoryId, _ := strconv.Atoi(category)
-
+		r.ParseForm()
+		category := r.Form["category_type"]
 		newPost := &models.Post{
-			User_id:     user.ID,
-			Title:       r.FormValue("title"),
-			Category_id: categoryId,
-			Content:     r.FormValue("content"),
+			User_id:       user.ID,
+			Title:         r.FormValue("title"),
+			Category_name: category,
+			Content:       r.FormValue("content"),
 		}
 
-		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.User_id, time.Now())
+		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.User_id, time.Now(), category)
 		if err != nil {
 			data.Data["PostWasCreated"] = "Post was not created!"
 			app.render(w, r, "workspace.page.tmpl", &data)
@@ -223,9 +222,6 @@ func (app *Application) putLike(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 303)
 	return
 }
-
-
-
 
 // <p>Hohd shift to add 2 or more categories</p>
 // <select class="form-select" id="category1" name="category1" multiple aria-label="multiple select example" required>

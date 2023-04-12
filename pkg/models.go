@@ -17,13 +17,13 @@ type User struct {
 }
 
 type Post struct {
-	ID          int
-	Title       string
-	Category_id int
-	User_id     int
-	Content     string
-	Like        int
-	Created_at  string
+	ID            int
+	Title         string
+	Category_name []string
+	User_id       int
+	Content       string
+	Like          int
+	Created_at    string
 }
 
 type Comment struct {

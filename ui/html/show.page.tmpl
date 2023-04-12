@@ -8,6 +8,7 @@
             <span>#{{.ID}}</span>
         </div>
         <pre><code>{{.Content}}</code></pre>
+        <div>{{range .Category_name}} {{.}} {{end}}</div>
         <div class='metadata'>
             <time>Posted at: {{.Created_at}}</time>
         </div>
