@@ -43,13 +43,16 @@
         </div>
 
 
-        <select class="form-select has-validation" id="category" name="category" required>
-          <option selected>Choose category</option>
-          {{range .DataCategories}}
-          <option value="{{.ID}}">{{.Name}}</option>
-          {{end}}
-        </select>
-
+<div>
+  {{range .DataCategories}}
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="category" value="{{.ID}}">
+          <label class="form-check-label" for="category">{{.Name}}</label>
+        </div>
+        {{end}}
+        
+        
+</div>
 
         <div class="mb-3">
           <label for="content" class="form-label has-validation">Add content</label>

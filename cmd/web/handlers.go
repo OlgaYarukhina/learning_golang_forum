@@ -223,3 +223,14 @@ func (app *Application) putLike(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 303)
 	return
 }
+
+
+
+
+// <p>Hohd shift to add 2 or more categories</p>
+// <select class="form-select" id="category1" name="category1" multiple aria-label="multiple select example" required>
+//   <option selected>Choose category</option>
+//   {{range .DataCategories}}
+//   <option value="{{.ID}}">{{.Name}}</option>
+//   {{end}}
+// </select>
