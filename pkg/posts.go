@@ -70,11 +70,11 @@ func (m *PostModel) getCountLikesByPostId(id *int) (int, error) {
 	return len(likes), nil
 }
 
-func (m *PostModel) Insert(header, description string, categoryId, userId int, created_at time.Time) error {
-	stmt := `INSERT INTO post (header, description, category_id, user_id, created_at)
-    VALUES(?,?,?,?, current_date)`
+func (m *PostModel) Insert(header, description string, userId int, created_at time.Time) error {
+	stmt := `INSERT INTO post (header, description, user_id, created_at)
+    VALUES(?,?,?, current_date)`
 
-	result, err := m.DB.Exec(stmt, header, description, categoryId, userId, created_at)
+	result, err := m.DB.Exec(stmt, header, description, userId, created_at)
 	if err != nil {
 		return err
 	}

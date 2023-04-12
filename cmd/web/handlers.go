@@ -188,7 +188,7 @@ func (app *Application) workspaceHandler(w http.ResponseWriter, r *http.Request)
 			Content:     r.FormValue("content"),
 		}
 
-		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.Category_id, newPost.User_id, time.Now())
+		err = app.Posts.Insert(newPost.Title, newPost.Content, newPost.User_id, time.Now())
 		if err != nil {
 			data.Data["PostWasCreated"] = "Post was not created!"
 			app.render(w, r, "workspace.page.tmpl", &data)
