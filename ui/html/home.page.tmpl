@@ -10,10 +10,43 @@
   <div class="row">
     <div class="col-12">Something here ... </div>
     <div class="col-9">
-      
-      <br>Artical 1
-      <br>Artical 2
-      <br>Artical 3
+      <table>
+        <tr>
+          <th>Title</th>
+          <th>Posted at</th>
+          <th>ID</th>
+          <th>Category</th>
+          <th>Like</th>
+          <label for="categories">Choose a category:</label>
+          <form id="filter-form">
+              <select onchange="this.form.submit()" name="categories" id="categories">
+                <option value=""></option>
+                {{
+                  range.DataCategories
+                }}
+                <option value="{{.ID}}">{{.Name}}</option>
+                {{
+                  end
+                }}
+              </select>
+          </form>
+        </tr>
+        {{
+          range.DataPost
+        }}
+        <tr>
+          <td>
+            <a href="/post?id={{.ID}}">{{.Title}}</a>
+          </td>
+          <td>{{.Created_at}}</td>
+          <td>#{{.ID}}</td>
+          <td>#{{.Category_id}}</td>
+          <td><a href="/like?id={{.ID}}">#{{.Like}}</a></td>
+        </tr>
+        {{
+          end
+        }}
+      </table>
     </div>
     <div class="col-3">
       <h5>Filters</h5>

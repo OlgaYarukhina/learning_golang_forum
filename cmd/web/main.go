@@ -22,6 +22,7 @@ type Application struct {
 	Users         *models.UserModel
 	Posts         *models.PostModel
 	Categories    *models.CategoryModel
+	Comment       *models.CommentModel
 }
 
 var app Application
@@ -49,6 +50,7 @@ func main() {
 		Users:         &models.UserModel{DB: db},
 		Posts:         &models.PostModel{DB: db},
 		Categories:    &models.CategoryModel{DB: db},
+		Comment:       &models.CommentModel{DB: db},
 	}
 
 	flag.Parse()
