@@ -8,12 +8,11 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-12">Something here ... </div>
     <div class="col-9">
       <table>
         <tr>
           <th>Title</th>
-          <th>Posted at</th>
+          <th>Date</th>
           <th>ID</th>
           <th>Category</th>
           <th>Like</th>
@@ -40,8 +39,8 @@
           </td>
           <td>{{.Created_at}}</td>
           <td>#{{.ID}}</td>
-          <td>#{{range .Category_name}} {{.}} {{end}}</td>
-          <td><a href="/like?id={{.ID}}">#{{.Like}}</a></td>
+          <td>{{range .Category_name}} {{.}} {{end}}</td>
+          <td><a href="/like?id={{.ID}}">👍{{.Like}}</a></td>
         </tr>
         {{
           end
@@ -49,13 +48,10 @@
       </table>
     </div>
     <div class="col-3">
-      <h5>Filters</h5>
-      <br>
-      <br>
-      <p>Loging for create artical, read full artical or comment!</p>
+      <p>In order to post, comment and like you have to log in!</p>
       <p></p>
 
-      <a role="button" class="btn btn-dark" href="/my-workspace">Create artical</a>
+      <a role="button" class="btn btn-dark" href="/my-workspace">Create a post</a>
         <p></p>
     </div>
   </div>

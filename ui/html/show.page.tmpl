@@ -6,19 +6,23 @@
         <div class='metadata'>
             <strong>{{.Title}}</strong>
             <span>#{{.ID}}</span>
+            <br>
         </div>
-        <pre><code>{{.Content}}</code></pre>
-        <div>{{range .Category_name}} {{.}} {{end}}</div>
+        {{.Content}}
+        <br><br>
+        <div><b>Category:</b> {{range .Category_name}} {{.}} {{end}}</div>
         <div class='metadata'>
-            <time>Posted at: {{.Created_at}}</time>
+            <time><b>Posted at: </b>{{.Created_at}}</time>
         </div>
     </div>
     {{end}}
+    <br>
+    <b>Comments: </b>
     {{range.DataComment}}
         <div class='comments'>
-            <span>#{{.Username}}
+            <span><b>{{.Username}} </b>({{.Created_at}}):
+            <br>
             {{.Comment}}
-            {{.Created_at}}
         </div>
     {{end}}
     <div>
