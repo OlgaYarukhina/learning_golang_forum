@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -163,25 +164,73 @@ func (m *PostModel) GetUserPosts(userID int) []*Post {
 }
 
 func (m *PostModel) GetPostsByCategory(id int) ([]*Post, error) {
-	stmt := `SELECT * FROM post WHERE category_id=?`
+	stmt := `SELECT * FROM categoryPostRelation WHERE category_id=?`
 	rows, err := m.DB.Query(stmt, id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var posts []*Post
+	var categoryPostRelation []*CategoryPostRelation
+	var postIds []int
 	for rows.Next() {
-		s := &Post{}
-		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Category_name, &s.User_id, &s.Created_at)
-		s.Like, err = m.getCountLikesByPostId(&s.ID)
+		s := &CategoryPostRelation{}
+		err = rows.Scan(&s.ID, &s.Post_id, &s.Category_id)
 		if err != nil {
 			return nil, err
 		}
-		posts = append(posts, s)
+		categoryPostRelation = append(categoryPostRelation, s)
+		postIds = append(postIds, s.Post_id)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+
+	posts, err := getPostsByIDList(m.DB, postIds)
+
+	return posts, nil
+}
+
+func getPostsByIDList(db *sql.DB, idList []int) ([]*Post, error) {
+	// Create a string of question marks corresponding to the number of IDs.
+	placeholders := strings.Trim(strings.Repeat(",?", len(idList)), ",")
+
+	// Prepare the SQL statement with placeholders for the IDs.
+	stmt, err := db.Prepare(fmt.Sprintf("SELECT id, header, description, user_id, created_at FROM post WHERE id IN (%s)", placeholders))
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	// Convert the slice of IDs to a variadic argument.
+	args := make([]interface{}, len(idList))
+	for i, id := range idList {
+		args[i] = id
+	}
+
+	// Create a slice to hold the retrieved posts.
+	posts := make([]*Post, 0, len(idList))
+
+	// Query the database with the list of IDs.
+	rows, err := stmt.Query(args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Iterate over the result set and add each post to the slice.
+	for rows.Next() {
+		var post Post
+		if err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.User_id, &post.Created_at); err != nil {
+			return nil, err
+		}
+		posts = append(posts, &post)
+	}
+
+	// Check for any errors during iteration.
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return posts, nil
 }
 

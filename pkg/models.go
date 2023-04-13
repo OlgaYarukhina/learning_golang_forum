@@ -26,6 +26,12 @@ type Post struct {
 	Created_at    string
 }
 
+type CategoryPostRelation struct {
+	ID          int
+	Post_id     int
+	Category_id int
+}
+
 type Comment struct {
 	ID         int
 	Comment    string
