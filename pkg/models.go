@@ -23,6 +23,7 @@ type Post struct {
 	User_id       int
 	Content       string
 	Like          int
+	Dislike       int
 	Created_at    string
 }
 

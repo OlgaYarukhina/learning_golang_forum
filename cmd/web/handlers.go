@@ -205,6 +205,7 @@ func (app *Application) workspaceHandler(w http.ResponseWriter, r *http.Request)
 // SYSTEM OF LIKES
 func (app *Application) putLike(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	type_of_like := r.URL.Query().Get("type")
 	if err != nil || id < 1 {
 		app.notFound(w)
 		return
@@ -215,9 +216,9 @@ func (app *Application) putLike(w http.ResponseWriter, r *http.Request) {
 	//userSeesion - хранит в себе userName конкретного пользователю кому принадлежит сам токен
 	//получаем всю информацию из базы данных юзера кому принадлежит этот username
 	user, err := app.Users.GetUserByUsername(userSession.Username)
-	like := app.Posts.CreateLike(user.ID, id)
-	if like != nil {
-		app.ErrorLog.Println(like)
+	err = app.Posts.CreateLike(user.ID, id, type_of_like)
+	if err != nil {
+		app.ErrorLog.Println(err)
 	}
 	http.Redirect(w, r, "/", 303)
 	return

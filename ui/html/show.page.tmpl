@@ -25,6 +25,7 @@
             {{.Comment}}
         </div>
     {{end}}
+    {{ if eq .CheckLogin true }}
     <div>
     {{ with .SinglePost}}
     <form method="POST" action="/post?id={{.ID}}">
@@ -33,4 +34,5 @@
     <input type="submit">
     </form>
     </div>
+    {{end}}
 {{end}}
