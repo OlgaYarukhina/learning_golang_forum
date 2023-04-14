@@ -164,6 +164,39 @@ func (m *PostModel) GetUserPosts(userID int) []*Post {
 	return fromLastPost
 }
 
+func (m *PostModel) GetUserFavoritePosts(userID int) []*Post {
+	post_ids := []int{}
+
+	// Prepare the SQL query
+	stmt, err := m.DB.Prepare("SELECT post_id FROM like WHERE user_id=? AND type_of='like'")
+	if err != nil {
+		return nil
+	}
+	defer stmt.Close()
+
+	// Query the database for matching rows
+	rows, err := stmt.Query(userID)
+	if err != nil {
+		return nil
+	}
+	defer rows.Close()
+
+	// Iterate over the rows and extract the post_ids
+	for rows.Next() {
+		var post_id int
+		err = rows.Scan(&post_id)
+		if err != nil {
+			return nil
+		}
+		post_ids = append(post_ids, post_id)
+	}
+
+	posts, err := getPostsByIDList(m.DB, post_ids)
+
+	return posts
+
+}
+
 func (m *PostModel) GetPostsByCategory(id int) ([]*Post, error) {
 	stmt := `SELECT * FROM categoryPostRelation WHERE category_id=?`
 	rows, err := m.DB.Query(stmt, id)

@@ -176,6 +176,7 @@ func (app *Application) workspaceHandler(w http.ResponseWriter, r *http.Request)
 	data.Data = make(map[string]string)
 	data.DataCategories = app.Categories.GetCategories()
 	data.DataPost = app.Posts.GetUserPosts(user.ID)
+	data.DataPostAdditional = app.Posts.GetUserFavoritePosts(user.ID)
 
 	if r.Method == "POST" {
 		r.ParseForm()
