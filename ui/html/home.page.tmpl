@@ -43,12 +43,8 @@
           </svg>
         </div>
       </div>
-      {{
-      end
-      }}
-      {{
-      range.DataPost
-      }}
+      {{ end }}
+      {{ range.DataPost }}
       <tr>
         <td>
           <a href="/post?id={{.ID}}">{{.Title}}</a>
