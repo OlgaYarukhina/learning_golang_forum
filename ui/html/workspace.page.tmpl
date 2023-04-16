@@ -8,57 +8,37 @@
 <div class="container">
 
   <div class="col-6">
-      <h2 class="pb-2 border-bottom">Create post</h2>
+    <h2 class="pb-2 border-bottom">Create post</h2>
 
-      <p></p>
-      <form class="needs-validation" method="POST">
-        <div class="mb-3">
-          <label for="title" class="form-label">Title</label>
-          <input
-            type="text"
-            class="form-control has-validation"
-            id="title"
-            name="title"
-            placeholder="Create title"
-            required
-          />
-        </div>
+    <p></p>
+    <form class="needs-validation" method="POST">
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control has-validation" id="title" name="title" placeholder="Create title"
+          required />
+      </div>
 
-        <div>
-          {{ range.DataCategories }}
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              name="category_type"
-              type="checkbox"
-              id="category"
-              value="{{.ID}}"
-            />
-            <label class="form-check-label" for="category">{{.Name}}</label>
-          </div>
-          {{ end }}
+      <div>
+        {{ range.DataCategories }}
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" name="category_type" type="checkbox" id="category" value="{{.ID}}" />
+          <label class="form-check-label" for="category">{{.Name}}</label>
         </div>
+        {{ end }}
+      </div>
 
-        <div class="mb-3">
-          <label for="content" class="form-label has-validation"
-            >Add content</label
-          >
-          <textarea
-            class="form-control"
-            id="content"
-            name="content"
-            rows="6"
-            required
-          ></textarea>
-        </div>
-        <div class="mb-3">
-          <button class="btn btn-dark" type="submit">Create post</button>
-        </div>
-      </form>
-      {{ with.Data.PostWasCreated }}
-      <p class="error">{{ . }}</p>
-      {{ end }}
-    </div>
+      <div class="mb-3">
+        <label for="content" class="form-label has-validation">Add content</label>
+        <textarea class="form-control" id="content" name="content" rows="6" required></textarea>
+      </div>
+      <div class="mb-3">
+        <button class="btn btn-dark" type="submit">Create post</button>
+      </div>
+    </form>
+    {{ with.Data.PostWasCreated }}
+    <p class="error">{{ . }}</p>
+    {{ end }}
+  </div>
 
   <div class="row">
     <div class="col-12">WELCOME</div>
@@ -68,8 +48,7 @@
         {{ range.DataPost }}
         <div class="col d-flex align-items-start">
           <div
-            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3"
-          >
+            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
             <svg class="bi" width="1em" height="1em">
               <use xlink:href="#toggles2"></use>
             </svg>
@@ -91,8 +70,7 @@
         {{ range.DataPostAdditional }}
         <div class="col d-flex align-items-start">
           <div
-            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3"
-          >
+            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
             <svg class="bi" width="1em" height="1em">
               <use xlink:href="#toggles2"></use>
             </svg>
@@ -108,7 +86,7 @@
     </div>
 
 
-    
+
   </div>
 
   {{ end }}
