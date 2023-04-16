@@ -3,16 +3,21 @@
 {{define "main"}}
     {{with .SinglePost}}
     <div class="container">
-        <div class="col-2">
-            </div>
             <div class="col-8">
                 <div class="col p-4 d-flex flex-column position-static">
-                    <strong class="d-inline-block mb-2 text-warning">{{range .Category_name}} {{.}} {{end}}</strong>
+                    <h4 class="d-inline-block mb-2 text-warning">{{range .Category_name}} {{.}} {{end}}</h4>
                     <h3 class="mb-0">{{.Title}}</h3>
                     <div class="mb-1 text-body-secondary">{{.Created_at}}</div>
                     <p class="mb-2"> {{.Content}}</p>
-    
+                   <div>
+                    <a href="/like?id={{.ID}}&type=like">  <img src = "/static/img/like.jpg" style="height: 30px; width: 30px; margin: 20px;">   {{.Like}}</a>
+                    <a href="/like?id={{.ID}}&type=dislike">  <img src = "/static/img/dislike.jpg" style="height: 30px; width: 30px; margin: 20px;">  {{.Dislike}}</a>
+                    </div>
+                   
+                   
     {{end}}
+   
+    <br>
     <p class="pb-2 border-bottom"><b>Leave comment</b></p>
     {{ if eq .CheckLogin false }}
     <p> Loging for leave comment</p>
@@ -28,7 +33,7 @@
     {{end}}
 
    
-    <br>
+    <br><br>
     <p class="pb-2 border-bottom"><b>All comments</b></p>
     {{range.DataComment}}
         <div class='comments' style="margin-top: 5px;">
@@ -36,6 +41,6 @@
             {{.Comment}}
         </div>
     {{end}}
-  
+  </div>
 </div>
 {{end}}

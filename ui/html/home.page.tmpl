@@ -10,7 +10,7 @@
 <div class="container">
   <div class="row">
     <div class="col-2">
-      <h4 class="pb-2 border-bottom">Categories</h4>
+      <p class="pb-2 border-bottom"><b>Categories</b></p>
 
       <form id="filter-form" >
         <select onchange="this.form.submit()" name="categories" id="categories" class="form-select" multiple aria-label="multiple select example">
@@ -30,9 +30,10 @@
         <div class="col p-4 d-flex flex-column position-static">
           <strong class="d-inline-block mb-2 text-warning">{{range .Category_name}} {{.}} {{end}}</strong>
           <h3 class="mb-0">{{.Title}}</h3>
-          <div class="mb-1 text-body-secondary">{{.Created_at}}</div>
+          <div class="mb-2 text-body-secondary" style="font-size: small;">{{.Created_at}}</div>
           <p class="mb-2 text-in-box"> {{.Content}}</p>
           <a href="/post?id={{.ID}}" class="stretched-link text-secondary">Continue reading</a>
+          <div class="text-body-secondary" style="position:absolute; font-size: small; right: 30%;"> Likes: {{.Like}} </div>
         </div>
         <div class="col-auto d-none d-lg-block">
           <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img"
@@ -51,8 +52,9 @@
         </td>
         <td>{{.Created_at}}</td>
         <td>{{range .Category_name}} {{.}} {{end}}</td>
-        <td><a href="/like?id={{.ID}}&type=like">👍{{.Like}}</a></td>
-        <td><a href="/like?id={{.ID}}&type=dislike">Dis - {{.Dislike}}</a></td>
+        <td><a href="/like?id={{.ID}}&type=like">👍{{.Like}}</a> </td>
+          <td> <a href="/like?id={{.ID}}&type=dislike">Dis - {{.Dislike}}</a> 
+       
       </tr>
       {{
       end
