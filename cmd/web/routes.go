@@ -1,16 +1,21 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
 
-func (app *application) routes() *http.ServeMux {
+func (app *Application) routes() *http.ServeMux {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/create", app.create)
-	mux.HandleFunc("/show", app.show)
+	mux.HandleFunc("/", app.homeHandler)
+	mux.HandleFunc("/authentication", app.authenticationHandler)
+	mux.HandleFunc("/logout", app.logoutHandler)
+	mux.HandleFunc("/my-workspace", app.checkAuth(app.workspaceHandler))
+	mux.HandleFunc("/post", app.showPostHandler)
+	mux.HandleFunc("/like", app.checkAuth(app.putLike))
 
-	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./static")})
+	fileServer := http.FileServer(neuteredFileSystem{http.Dir("./ui/static/")})
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	return mux

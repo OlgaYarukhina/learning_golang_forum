@@ -1,0 +1,77 @@
+{{template "base" .}}
+{{define "title"}}Post #{{.SinglePost.ID}}{{end}}
+{{define "main"}}
+{{with .SinglePost}}
+<div class="container">
+    <div class="col-8">
+        <div class="col p-4 d-flex flex-column position-static">
+            <h4 class="d-inline-block mb-2 text-warning">{{range .Category_name}} {{.}} {{end}}</h4>
+            <h3 class="mb-0">{{.Title}}</h3>
+            <div class="mb-1 text-body-secondary">{{.Created_at}}</div>
+            <p class="mb-2"> {{.Content}}</p>
+{{end}}
+             {{ if eq .CheckLogin false }}
+
+            <div>
+                    <a > <img src="/static/img/like.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Like}}</a>
+                    <a> <img src="/static/img/dislike.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Dislike}}</a>
+            </div>
+            {{end}}
+             {{ if eq .CheckLogin true }}
+
+            <div>
+                    <a href="/like?id={{.SinglePost.ID}}&type=like"> <img src="/static/img/like.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Like}}</a>
+                    <a href="/like?id={{.SinglePost.ID}}&type=dislike"> <img src="/static/img/dislike.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Dislike}}</a>
+            </div>
+             {{end}}
+
+
+            <br>
+            <p class="pb-2 border-bottom"><b>Leave comment</b></p>
+            {{ if eq .CheckLogin false }}
+            <p> Loging for leave comment</p>
+            {{end}}
+            {{ if eq .CheckLogin true }}
+            {{ with .SinglePost}}
+            <form method="POST" action="/post?id={{.ID}}">
+                {{ end}}
+                <textarea class="form-control" id="content" name="comment" rows="3" required></textarea>
+                <br>
+                <button class="btn btn-dark" type="submit">Leave comment</button>
+            </form>
+            {{end}}
+
+
+            <br><br>
+            <p class="pb-2 border-bottom"><b>All comments</b></p>
+
+            {{ if eq .CheckLogin false }}
+            {{range.DataComment}}
+            <div class='comments' style="margin-top: 5px;">
+                <span><b>{{ .Username }} </b>({{.Created_at}}):
+                <a name="{{.ID}}"></a>
+                <p>{{.Comment}}</p>
+                <a><img src="/static/img/like.jpg" style="height: 20px; width: 20px; margin: px;">{{.Like}}</a>
+                {{end}}
+            </div>
+            {{end}}
+
+            {{ if eq .CheckLogin true }}
+            {{range.DataComment}}
+            <div class='comments' style="margin-top: 5px;">
+                <span><b>{{ .Username }} </b>({{.Created_at}}):
+                <a name="{{.ID}}"></a>
+                <p>{{.Comment}}</p>
+                <a href="/like?comment_id={{.ID}}#{{.ID}}"><img src="/static/img/like.jpg" style="height: 20px; width: 20px; margin: px;">{{.Like}}</a>
+                {{end}}
+            </div>
+            {{end}}
+
+            
+        </div>
+    </div>
+    {{end}}

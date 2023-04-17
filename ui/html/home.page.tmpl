@@ -1,8 +1,71 @@
+<!doctype html>
+
 {{template "base" .}}
- 
-{{define "title"}}Домашняя страницы{{end}}
- 
+
+{{define "title"}}Home page{{end}}
+
 {{define "main"}}
-<h2>Последние заметки</h2>
-<p>Пока здесь ничего нет!</p>
+<br />
+
+<div class="container">
+  <div class="row">
+    <div class="col-2">
+      <p class="pb-2 border-bottom"><b>Categories</b></p>
+
+      <form id="filter-form" >
+        <select onchange="this.form.submit()" name="categories" id="categories" class="form-select" multiple aria-label="multiple select example">
+          {{ range.DataCategories }}
+          <option value="{{.ID}}">{{.Name}}</option>
+          {{ end }}
+        </select>
+      </form>
+      <br/>
+      <a href="/" class="btn btn-outline-warning" style="width: 100%;">All posts</a>
+
+    </div>
+
+    <div class="col-10">
+      {{ range.DataPost }}
+      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+          <strong class="d-inline-block mb-2 text-warning">{{range .Category_name}} {{.}} {{end}}</strong>
+          <h3 class="mb-0">{{.Title}}</h3>
+          <div class="mb-2 text-body-secondary" style="font-size: small;">{{.Created_at}}</div>
+          <p class="mb-2 text-in-box"> {{.Content}}</p>
+          <a href="/post?id={{.ID}}" class="stretched-link text-secondary">Continue reading</a>
+          <div class="text-body-secondary" style="position:absolute; font-size: small; right: 30%;"> Likes: {{.Like}} </div>
+        </div>
+        <div class="col-auto d-none d-lg-block">
+          <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img"
+            aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <title>Picture in second task</title>
+            <rect width="100%" height="100%" fill="#55595c"></rect><text x="30%" y="50%" fill="#eceeef"
+              dy=".3em">Picture </text>
+          </svg>
+        </div>
+      </div>
+      {{ end }}
+      {{ range.DataPost }}
+      <tr>
+        <td>
+          <a href="/post?id={{.ID}}">{{.Title}}</a>
+        </td>
+        <td>{{.Created_at}}</td>
+        <td>{{range .Category_name}} {{.}} {{end}}</td>
+        <td><a href="/like?id={{.ID}}&type=like">👍{{.Like}}</a> </td>
+          <td> <a href="/like?id={{.ID}}&type=dislike">Dis - {{.Dislike}}</a> 
+       
+      </tr>
+      {{
+      end
+      }}
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
 {{end}}

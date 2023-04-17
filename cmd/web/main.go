@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	models "forum/pkg"
+	"github.com/mattn/go-sqlite3"
 	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"log"
@@ -12,17 +13,23 @@ import (
 	"path/filepath"
 )
 
-type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	templateCache map[string]*template.Template
-	users         *models.UserModel
+type Application struct {
+	ErrorLog      *log.Logger
+	InfoLog       *log.Logger
+	sqlError      sqlite3.Error
+	TemplateCache map[string]*template.Template
+	Session       map[string]models.Session
+	Users         *models.UserModel
+	Posts         *models.PostModel
+	Categories    *models.CategoryModel
+	Comment       *models.CommentModel
 }
+
+var app Application
 
 func main() {
 
 	addr := flag.String("addr", ":4000", "Network address HTTP")
-
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -35,16 +42,20 @@ func main() {
 
 	templateCache, err := newTemplateCache("./ui/html/")
 
-	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
-		templateCache: templateCache,
-		users:         &models.UserModel{DB: db},
+	app = Application{
+		ErrorLog:      errorLog,
+		InfoLog:       infoLog,
+		TemplateCache: templateCache,
+		Session:       map[string]models.Session{},
+		Users:         &models.UserModel{DB: db},
+		Posts:         &models.PostModel{DB: db},
+		Categories:    &models.CategoryModel{DB: db},
+		Comment:       &models.CommentModel{DB: db},
 	}
 
 	flag.Parse()
 
-	infoLog.Printf("Запуск веб-сервера на http://127.0.0.1:%s", *addr)
+	infoLog.Printf("Starting forum on port: 4000", *addr)
 
 	srv := &http.Server{
 		Addr:     *addr,

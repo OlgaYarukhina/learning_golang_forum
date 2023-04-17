@@ -1,37 +1,49 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type UserModel struct {
 	DB *sql.DB
 }
 
+//получаем все данные о пользователе по его логину
+func (m *UserModel) GetUserByUsername(username string) (User, error) {
+	stmt := `SELECT * FROM user WHERE username = ?`
+	s := User{}
+	row := m.DB.QueryRow(stmt, username)
+	err := row.Scan(&s.ID, &s.UserName, &s.Password, &s.Email, &s.Created_at)
+	if err != nil {
+		return s, nil
+	}
+
+	return s, err
+}
+
 // Insert - Метод для создания
-func (m *UserModel) Insert(username, password, email string) (int, error) {
-	// Ниже будет SQL запрос, который мы хотим выполнить. Мы разделили его на две строки
-	// для удобства чтения (поэтому он окружен обратными кавычками
-	// вместо обычных двойных кавычек).
+func (m *UserModel) Insert(username, password, email string) error {
+
 	stmt := `INSERT INTO user (username, password, email, created_at)
     VALUES(?, ?, ?, current_date)`
 
-	// Используем метод Exec() из встроенного пула подключений для выполнения
-	// запроса. Первый параметр это сам SQL запрос, за которым следует
-	// заголовок заметки, содержимое и срока жизни заметки. Этот
-	// метод возвращает объект sql.Result, который содержит некоторые основные
-	// данные о том, что произошло после выполнении запроса.
-	result, err := m.DB.Exec(stmt, username, password, email)
+	_, err := m.DB.Exec(stmt, username, password, email)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	// Используем метод LastInsertId(), чтобы получить последний ID
-	// созданной записи из таблицу snippets.
-	id, err := result.LastInsertId()
+	return nil
+}
+
+func (m *UserModel) CheckUser(email string) (User, error) {
+	stmt := `SELECT * FROM user WHERE email = ?`
+	s := User{}
+	row := m.DB.QueryRow(stmt, email)
+	err := row.Scan(&s.ID, &s.UserName, &s.Password, &s.Email, &s.Created_at)
 	if err != nil {
-		return 0, err
+		return s, nil
 	}
 
-	// Возвращаемый ID имеет тип int64, поэтому мы конвертируем его в тип int
-	// перед возвратом из метода.
-	return int(id), nil
+	return s, err
+
 }
