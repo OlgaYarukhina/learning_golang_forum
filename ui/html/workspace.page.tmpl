@@ -6,30 +6,26 @@
 
 {{define "main"}}
 <div class="container">
-
+  <br>
   <div class="col-6">
-    <h2 class="pb-2 border-bottom">Create post</h2>
-
-    <p></p>
+    <h4 class="pb-2 border-bottom">Create post</h4>
+    <br>
     <form class="needs-validation" method="POST">
       <div class="mb-3">
-        <label for="title" class="form-label">Title</label>
         <input type="text" class="form-control has-validation" id="title" name="title" placeholder="Create title"
           required />
       </div>
-
       <div>
         {{ range.DataCategories }}
         <div class="form-check form-check-inline">
-          <input class="form-check-input" name="category_type" type="checkbox" id="category" value="{{.ID}}" />
+          <input class="form-check-input" name="category_type" type="checkbox" id="category" value="{{.ID}}" required />
           <label class="form-check-label" for="category">{{.Name}}</label>
         </div>
         {{ end }}
       </div>
-
+      <br>
       <div class="mb-3">
-        <label for="content" class="form-label has-validation">Add content</label>
-        <textarea class="form-control" id="content" name="content" rows="6" required></textarea>
+        <textarea class="form-control" id="content" name="content" placeholder="Add content" rows="6" required></textarea>
       </div>
       <div class="mb-3">
         <button class="btn btn-dark" type="submit">Create post</button>
@@ -39,24 +35,18 @@
     <p class="error">{{ . }}</p>
     {{ end }}
   </div>
+<br>
 
   <div class="row">
-    <div class="col-12">WELCOME</div>
     <div class="col-6">
-      <h2 class="pb-2 border-bottom">My posts</h2>
-      <div class="row g-4 py-5 row-cols-1 row-cols-lg-1">
+      <h4 class="pb-2 border-bottom text-secondary">My posts</h4>
+      <div class="row g-4 py-3 row-cols-1 row-cols-lg-1">
         {{ range.DataPost }}
         <div class="col d-flex align-items-start">
-          <div
-            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-            <svg class="bi" width="1em" height="1em">
-              <use xlink:href="#toggles2"></use>
-            </svg>
-          </div>
           <div>
             <h3 class="fs-2">{{.Title}}</h3>
-            <p>{{.Content}}</p>
-            <a href="#" class="btn btn-dark"> Read full post & comments</a>
+            <p class="mb-2 text-in-box"> {{.Content}}</p>
+          <a href="/post?id={{.ID}}" class="text-secondary">Continue reading</a>
           </div>
         </div>
         {{ end }}
@@ -65,20 +55,14 @@
 
 
     <div class="col-6">
-      <h2 class="pb-2 border-bottom">Favorite posts</h2>
-      <div class="row g-4 py-5 row-cols-1 row-cols-lg-1">
+      <h4 class="pb-2 border-bottom text-secondary">Favorite posts</h4>
+      <div class="row g-4 py-3 row-cols-1 row-cols-lg-1">
         {{ range.DataPostAdditional }}
         <div class="col d-flex align-items-start">
-          <div
-            class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-            <svg class="bi" width="1em" height="1em">
-              <use xlink:href="#toggles2"></use>
-            </svg>
-          </div>
           <div>
             <h3 class="fs-2">{{.Title}}</h3>
-            <p>{{.Content}}</p>
-            <a href="#" class="btn btn-dark"> Read full post & comments</a>
+            <p class="mb-2 text-in-box"> {{.Content}}</p>
+            <a href="/post?id={{.ID}}" class="text-secondary">Continue reading</a>
           </div>
         </div>
         {{ end }}
