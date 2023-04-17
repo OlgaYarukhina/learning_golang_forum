@@ -54,9 +54,14 @@ func (app *Application) showPostHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	if r.Method == "POST" {
+		c, err := r.Cookie("session_token") //получаем токен
+		if err != nil || err == http.ErrNoCookie {
+			data.CheckLogin = false
+			http.Redirect(w, r, "/authentication", 302)
+			return
+		}
 		comment := r.FormValue("comment")
 		//Получаем токен из куков
-		c, _ := r.Cookie("session_token")
 		sessionToken := c.Value
 		userSession := app.Session[sessionToken]
 		//userSeesion - хранит в себе userName конкретного пользователю кому принадлежит сам токен
