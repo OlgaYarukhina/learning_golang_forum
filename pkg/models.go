@@ -39,6 +39,7 @@ type Comment struct {
 	Post_id    int
 	User_id    int
 	Username   string
+	Like       int
 	Created_at string
 }
 

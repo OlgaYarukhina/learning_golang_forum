@@ -205,6 +205,25 @@ func (app *Application) workspaceHandler(w http.ResponseWriter, r *http.Request)
 
 // SYSTEM OF LIKES
 func (app *Application) putLike(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Query().Get("comment_id") != "" {
+		id, err := strconv.Atoi(r.URL.Query().Get("comment_id"))
+		if err != nil || id < 1 {
+			app.notFound(w)
+			return
+		}
+		c, _ := r.Cookie("session_token")
+		sessionToken := c.Value
+		userSession := app.Session[sessionToken]
+		//userSeesion - хранит в себе userName конкретного пользователю кому принадлежит сам токен
+		//получаем всю информацию из базы данных юзера кому принадлежит этот username
+		user, err := app.Users.GetUserByUsername(userSession.Username)
+		err = app.Comment.CreateLike(id, user.ID)
+		if err != nil {
+			app.ErrorLog.Println(err)
+		}
+		http.Redirect(w, r, r.Header.Get("Referer"), 303)
+		return
+	}
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	type_of_like := r.URL.Query().Get("type")
 	if err != nil || id < 1 {
@@ -221,7 +240,7 @@ func (app *Application) putLike(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.ErrorLog.Println(err)
 	}
-	http.Redirect(w, r, "/", 303)
+	http.Redirect(w, r, r.Header.Get("Referer"), 303)
 	return
 }
 

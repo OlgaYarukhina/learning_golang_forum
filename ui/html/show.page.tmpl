@@ -9,14 +9,26 @@
             <h3 class="mb-0">{{.Title}}</h3>
             <div class="mb-1 text-body-secondary">{{.Created_at}}</div>
             <p class="mb-2"> {{.Content}}</p>
-            <div>
-                <a href="/like?id={{.ID}}&type=like"> <img src="/static/img/like.jpg"
-                        style="height: 30px; width: 30px; margin: 20px;"> {{.Like}}</a>
-                <a href="/like?id={{.ID}}&type=dislike"> <img src="/static/img/dislike.jpg"
-                        style="height: 30px; width: 30px; margin: 20px;"> {{.Dislike}}</a>
-            </div>
+{{end}}
+             {{ if eq .CheckLogin false }}
 
+            <div>
+                    <a > <img src="/static/img/like.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Like}}</a>
+                    <a> <img src="/static/img/dislike.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Dislike}}</a>
+            </div>
             {{end}}
+             {{ if eq .CheckLogin true }}
+
+            <div>
+                    <a href="/like?id={{.SinglePost.ID}}&type=like"> <img src="/static/img/like.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Like}}</a>
+                    <a href="/like?id={{.SinglePost.ID}}&type=dislike"> <img src="/static/img/dislike.jpg"
+                            style="height: 30px; width: 30px; margin: 20px;"> {{.SinglePost.Dislike}}</a>
+            </div>
+             {{end}}
+
 
             <br>
             <p class="pb-2 border-bottom"><b>Leave comment</b></p>
@@ -39,6 +51,9 @@
             {{range.DataComment}}
             <div class='comments' style="margin-top: 5px;">
                 <span><b>{{ .Username }} </b>({{.Created_at}}):
+                <a href="/like?comment_id={{.ID}}#{{.ID}}">Like</a>
+                <a name="{{.ID}}"></a>
+                <p>{{.Like}}</p>
                     {{.Comment}}
             </div>
             {{end}}

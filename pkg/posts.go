@@ -71,6 +71,7 @@ func (m *PostModel) GetPost(id int) (*Post, error) {
 	row := m.DB.QueryRow(`SELECT * FROM post WHERE ID = ?`, id)
 	err := row.Scan(&post.ID, &post.Title, &post.Content, &post.User_id, &post.Created_at)
 	post.Category_name, err = m.getCategoryRelation(&post.ID)
+	post.Like, post.Dislike, err = m.getCountLikesByPostId(&post.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return post, fmt.Errorf("post not found")
