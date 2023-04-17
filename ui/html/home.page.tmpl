@@ -45,20 +45,7 @@
         </div>
       </div>
       {{ end }}
-      {{ range.DataPost }}
-      <tr>
-        <td>
-          <a href="/post?id={{.ID}}">{{.Title}}</a>
-        </td>
-        <td>{{.Created_at}}</td>
-        <td>{{range .Category_name}} {{.}} {{end}}</td>
-        <td><a href="/like?id={{.ID}}&type=like">👍{{.Like}}</a> </td>
-          <td> <a href="/like?id={{.ID}}&type=dislike">Dis - {{.Dislike}}</a> 
-       
-      </tr>
-      {{
-      end
-      }}
+
 
     </div>
 
