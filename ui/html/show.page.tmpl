@@ -48,15 +48,30 @@
 
             <br><br>
             <p class="pb-2 border-bottom"><b>All comments</b></p>
+
+            {{ if eq .CheckLogin false }}
             {{range.DataComment}}
             <div class='comments' style="margin-top: 5px;">
                 <span><b>{{ .Username }} </b>({{.Created_at}}):
-                <a href="/like?comment_id={{.ID}}#{{.ID}}">Like</a>
                 <a name="{{.ID}}"></a>
-                <p>{{.Like}}</p>
-                    {{.Comment}}
+                <p>{{.Comment}}</p>
+                <a><img src="/static/img/like.jpg" style="height: 20px; width: 20px; margin: px;">{{.Like}}</a>
+                {{end}}
             </div>
             {{end}}
+
+            {{ if eq .CheckLogin true }}
+            {{range.DataComment}}
+            <div class='comments' style="margin-top: 5px;">
+                <span><b>{{ .Username }} </b>({{.Created_at}}):
+                <a name="{{.ID}}"></a>
+                <p>{{.Comment}}</p>
+                <a href="/like?comment_id={{.ID}}#{{.ID}}"><img src="/static/img/like.jpg" style="height: 20px; width: 20px; margin: px;">{{.Like}}</a>
+                {{end}}
+            </div>
+            {{end}}
+
+            
         </div>
     </div>
     {{end}}
