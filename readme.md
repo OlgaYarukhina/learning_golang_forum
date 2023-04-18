@@ -39,10 +39,11 @@ to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
 ## Authors 
+* [oyarukhi](https://01.kood.tech/git/oyarukhi)
 * [dyskol](https://01.kood.tech/git/dyskol)
 * [erikje](https://01.kood.tech/git/erikje)
-* [oyarukhi](https://01.kood.tech/git/oyarukhi)
 * [jegor_petsorin](https://01.kood.tech/git/jegor_petsorin)
+* [erikje](https://01.kood.tech/git/erikje)
 
 ## License
 
